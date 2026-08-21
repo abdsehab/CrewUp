@@ -5,21 +5,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        "on-secondary": "#26332b",
-        "on-surface-variant": "#c1cab3",
-        "on-tertiary": "#24342a",
-        primary: "#ffffff",
-        "primary-fixed": "#aff66b",
-        "primary-fixed-dim": "#94d951",
-        "primary-container": "#aff66b",
-        "on-primary-container": "#3e7100",
-        surface: "#101413",
-        "surface-container": "#1c201f",
-        "surface-container-high": "#272b2a",
-        "surface-container-lowest": "#0b0f0e",
-        "outline-variant": "#424938",
         background: "#101413",
-        "on-background": "#e0e3e1",
+        surface: "#1c201f",
+        "surface-alt": "#24342A",
+        border: "#324539",
+        "border-alt": "#424938",
+        "text-main": "#e0e3e1",
+        "text-muted": "#c1cab3",
+        accent: "#aff66b",
       },
       spacing: {
         gutter: "24px",
@@ -32,4 +25,4 @@ export default {
     },
   },
   plugins: [],
-}
+};
