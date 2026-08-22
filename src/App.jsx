@@ -23,6 +23,7 @@ import VolunteerGuidelines from './pages/legal/VolunteerGuidelines';
 // Organizer Portal
 import OrganizerDashboard from './pages/organizer_portal/OrganizerDashboard';
 import OrganizerManageEvents from './pages/organizer_portal/OrganizerManageEvents';
+import OrganizerManageVolunteers from './pages/organizer_portal/OrganizerManageVolunteers';
 
 function App() {
   return (
@@ -51,7 +52,8 @@ function App() {
 
         {/* Organizer Portal */}
         <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
-        <Route path="/organizer/manage-events" element={<OrganizerManageEvents />} />
+        <Route path="/organizer/events" element={<OrganizerManageEvents />} />
+        <Route path="/organizer/volunteers" element={<OrganizerManageVolunteers />} />
 
       </Routes>
     </Router>

@@ -36,7 +36,7 @@ function OrganizerDashboard() {
 
   return (
     <div className="flex min-h-screen bg-[#101413] text-[#e0e3e1]">
-      {/* ================= SIDEBAR ================= */}
+      {/* ---------------- SIDEBAR ------------------- */}
       <aside className="flex min-h-screen w-[275px] flex-col justify-between border-r border-[#24342A] bg-[#1c201f] px-6 py-7">
         <div>
           {/* Logo */}
@@ -58,7 +58,7 @@ function OrganizerDashboard() {
           <nav className="space-y-2">
             {/* Dashboard */}
             <NavLink
-              to="/organizer-dashboard"
+              to="/organizer/dashboard"
               className={({ isActive }) =>
                 `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
                   isActive
@@ -73,7 +73,7 @@ function OrganizerDashboard() {
 
             {/* Manage Events */}
             <NavLink
-              to="/organizer-portal"
+              to="/organizer/events"
               className={({ isActive }) =>
                 `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
                   isActive
@@ -86,11 +86,19 @@ function OrganizerDashboard() {
               Manage Events
             </NavLink>
 
-            {/* Volunteers */}
-            <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
+            <NavLink
+              to="/organizer/volunteers"
+              className={({ isActive }) =>
+                `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-xs uppercase tracking-widest transition ${
+                  isActive
+                    ? "bg-[#424f47] text-[#afff66]"
+                    : "text-[#c1cab3] hover:bg-[#24342A]"
+                }`
+              }
+            >
               <Users size={20} />
               Volunteers
-            </button>
+            </NavLink>
 
             {/* Settings */}
             <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
@@ -107,7 +115,7 @@ function OrganizerDashboard() {
         </button>
       </aside>
 
-      {/* ================= MAIN CONTENT ================= */}
+      {/* ----------------- MAIN CONTENT -------------------- */}
       <main className="flex-1 px-10 py-11">
         {/* Page Heading */}
         <div className="mb-11">
@@ -119,7 +127,7 @@ function OrganizerDashboard() {
           </p>
         </div>
 
-        {/* ================= STAT CARDS ================= */}
+        {/* ----------------- STAT CARDS --------------------- */}
         <div className="mb-11 grid grid-cols-3 gap-6">
           {/* Active Events */}
           <div className="relative h-[214px] overflow-hidden rounded-2xl border border-[#324539] bg-[#1c201f] p-7">
@@ -133,19 +141,14 @@ function OrganizerDashboard() {
               </div>
             </div>
 
-            <h2 className="absolute bottom-8 text-5xl font-semibold">12</h2>
-
-            {/* Progress line */}
-            <div className="absolute bottom-0 left-0 h-[5px] w-full bg-[#324539]">
-              <div className="h-full w-[75%] bg-[#afff66]" />
-            </div>
+            <h2 className="absolute bottom-12 text-5xl font-semibold">12</h2>
           </div>
 
           {/* Volunteer Hours */}
           <div className="h-[214px] rounded-2xl border border-[#324539] bg-[#1c201f] p-7">
             <div className="flex items-center justify-between">
               <p className="text-xs uppercase tracking-widest text-[#c1cab3]">
-                Total Volunteer Hrs
+                Total Volunteer Hours
               </p>
 
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#24342A] text-[#afff66]">
@@ -153,11 +156,7 @@ function OrganizerDashboard() {
               </div>
             </div>
 
-            <h2 className="mt-12 text-5xl font-semibold">
-              1,450<span className="ml-1 text-3xl">h</span>
-            </h2>
-
-            <p className="mt-4 text-sm text-[#afff66]">↗ +12% this month</p>
+            <h2 className="mt-12 text-5xl font-semibold"> 1,450<span className="ml-1 text-3xl">h</span> </h2>
           </div>
 
           {/* Pending Approvals */}
@@ -180,7 +179,7 @@ function OrganizerDashboard() {
           </div>
         </div>
 
-        {/* ================= RECENT REGISTRATIONS ================= */}
+        {/* ----------------- RECENT REGISTRATIONS --------------------- */}
 
         <div className="mb-4 flex items-end justify-between border-b border-[#24342A] pb-5">
           <div>
@@ -197,7 +196,7 @@ function OrganizerDashboard() {
           </button>
         </div>
 
-        {/* ================= VOLUNTEER TABLE ================= */}
+        {/* ------------------------- VOLUNTEER TABLE ------------------------------ */}
 
         <section className="overflow-hidden rounded-2xl border border-[#324539] bg-[#1c201f]">
           {/* Table Header */}
