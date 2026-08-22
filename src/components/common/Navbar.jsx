@@ -13,7 +13,7 @@ const Navbar = () => {
         </Link>
         
         <div className="hidden md:flex items-center space-x-8 text-sm font-medium">
-          <Link to="/" className={`transition-colors hover:text-brand ${location.pathname === '/' ? 'text-brand' : 'text-light'}`}>
+          <Link to="/events" className={`transition-colors hover:text-brand ${location.pathname === '/events' ? 'text-brand' : 'text-light'}`}>
             Explore Events
           </Link>
           <Link to="/organizations" className={`transition-colors hover:text-brand ${location.pathname === '/organizations' ? 'text-brand' : 'text-light'}`}>

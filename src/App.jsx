@@ -3,6 +3,8 @@ import Layout from './components/common/Layout';
 
 // Main pages
 import Home from './pages/main/Home';
+import ExploreEvents from './pages/main/ExploreEvents';
+import EventDetails from './pages/main/EventDetails';
 import About from './pages/main/About';
 import Organizations from './pages/Organizations';
 
@@ -27,6 +29,8 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Main */}
           <Route index element={<Home />} />
+          <Route path="events" element={<ExploreEvents />} />
+          <Route path="events/:id" element={<EventDetails />} />
           <Route path="about" element={<About />} />
           <Route path="organizations" element={<Organizations />} />
           
