@@ -1,10 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, MapPin, ArrowRight } from 'lucide-react';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import bgImg from '../../assets/auth_volunteer.jpg';
 
 const VolunteerRegister = () => {
+  const navigate = useNavigate(); 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate('/auth/volunteer-login');
+  };
   return (
     <div className="w-full flex-grow flex">
       {/* Left side - Image & Branding */}
@@ -36,7 +41,7 @@ const VolunteerRegister = () => {
             <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
             <p className="text-light-muted text-sm mb-8">Enter your details to configure your stewardship profile.</p>
 
-            <form className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <Input label="First Name" id="firstName" placeholder="Jane" />
                 <Input label="Last Name" id="lastName" placeholder="Doe" />

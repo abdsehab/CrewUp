@@ -1,9 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Globe, Mail, Hash, UploadCloud, ArrowRight } from 'lucide-react';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 
 const OrgRegister = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate('/auth/org-login');
+  };
+
   return (
     <div className="w-full flex-grow flex items-center justify-center p-6 md:p-12 relative">
       {/* Subtle background glow */}
@@ -18,7 +25,7 @@ const OrgRegister = () => {
         </div>
 
         <div className="bg-dark-surface border border-dark-border rounded-xl p-8 shadow-2xl">
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             
             <Input label="Organization Name *" id="orgName" placeholder="e.g., Eco-Tech Stewardship" />
 
