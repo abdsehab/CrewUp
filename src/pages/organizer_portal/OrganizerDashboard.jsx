@@ -1,0 +1,281 @@
+import { NavLink } from "react-router-dom";
+
+import {
+  LayoutDashboard,
+  CalendarDays,
+  Users,
+  Settings,
+  Plus,
+  CalendarCheck,
+  Timer,
+  ClipboardCheck,
+  Filter,
+  Mail,
+  MoreVertical,
+} from "lucide-react";
+
+function OrganizerDashboard() {
+  const volunteers = [
+    {
+      name: "Jane Doe",
+      email: "jane.d@example.com",
+      role: "Team Lead",
+      status: "Registered",
+      initials: "JD",
+      image: false,
+    },
+    {
+      name: "Marcus Wright",
+      email: "m.wright@domain.com",
+      role: "Logistics Support",
+      status: "Approved",
+      initials: "MW",
+      image: false,
+    },
+  ];
+
+  return (
+    <div className="flex min-h-screen bg-[#101413] text-[#e0e3e1]">
+      {/* ================= SIDEBAR ================= */}
+      <aside className="flex min-h-screen w-[275px] flex-col justify-between border-r border-[#24342A] bg-[#1c201f] px-6 py-7">
+        <div>
+          {/* Logo */}
+          <div className="mb-12 flex items-center gap-3">
+            <div className="h-11 w-11 rounded-full border border-[#424938] bg-[#24342A]" />
+
+            <div>
+              <h2 className="text-lg font-semibold tracking-wide text-[#afff66]">
+                Organizer Portal
+              </h2>
+
+              <p className="text-xs tracking-wider text-[#c1cab3]">
+                Eco-Tech Management
+              </p>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="space-y-2">
+            {/* Dashboard */}
+            <NavLink
+              to="/organizer-dashboard"
+              className={({ isActive }) =>
+                `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
+                  isActive
+                    ? "bg-[#424f47] text-[#afff66]"
+                    : "text-[#c1cab3] hover:bg-[#24342A]"
+                }`
+              }
+            >
+              <LayoutDashboard size={20} />
+              Dashboard
+            </NavLink>
+
+            {/* Manage Events */}
+            <NavLink
+              to="/organizer-portal"
+              className={({ isActive }) =>
+                `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
+                  isActive
+                    ? "bg-[#424f47] text-[#afff66]"
+                    : "text-[#c1cab3] hover:bg-[#24342A]"
+                }`
+              }
+            >
+              <CalendarDays size={20} />
+              Manage Events
+            </NavLink>
+
+            {/* Volunteers */}
+            <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
+              <Users size={20} />
+              Volunteers
+            </button>
+
+            {/* Settings */}
+            <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
+              <Settings size={20} />
+              Settings
+            </button>
+          </nav>
+        </div>
+
+        {/* Create Event */}
+        <button className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#afff66] py-4 font-medium tracking-wide text-[#101413] transition hover:bg-[#b7ff72]">
+          <Plus size={21} />
+          Create Event
+        </button>
+      </aside>
+
+      {/* ================= MAIN CONTENT ================= */}
+      <main className="flex-1 px-10 py-11">
+        {/* Page Heading */}
+        <div className="mb-11">
+          <h1 className="text-5xl font-semibold">Dashboard Overview</h1>
+
+          <p className="mt-3 text-base text-[#c1cab3]">
+            Welcome back. Here is the current status of your stewardship
+            activities.
+          </p>
+        </div>
+
+        {/* ================= STAT CARDS ================= */}
+        <div className="mb-11 grid grid-cols-3 gap-6">
+          {/* Active Events */}
+          <div className="relative h-[214px] overflow-hidden rounded-2xl border border-[#324539] bg-[#1c201f] p-7">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-widest text-[#c1cab3]">
+                Active Events
+              </p>
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#24342A] text-[#afff66]">
+                <CalendarCheck size={20} />
+              </div>
+            </div>
+
+            <h2 className="absolute bottom-8 text-5xl font-semibold">12</h2>
+
+            {/* Progress line */}
+            <div className="absolute bottom-0 left-0 h-[5px] w-full bg-[#324539]">
+              <div className="h-full w-[75%] bg-[#afff66]" />
+            </div>
+          </div>
+
+          {/* Volunteer Hours */}
+          <div className="h-[214px] rounded-2xl border border-[#324539] bg-[#1c201f] p-7">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-widest text-[#c1cab3]">
+                Total Volunteer Hrs
+              </p>
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#24342A] text-[#afff66]">
+                <Timer size={20} />
+              </div>
+            </div>
+
+            <h2 className="mt-12 text-5xl font-semibold">
+              1,450<span className="ml-1 text-3xl">h</span>
+            </h2>
+
+            <p className="mt-4 text-sm text-[#afff66]">↗ +12% this month</p>
+          </div>
+
+          {/* Pending Approvals */}
+          <div className="h-[214px] rounded-2xl border border-[#324539] bg-[#1c201f] p-7">
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-widest text-[#c1cab3]">
+                Pending Approvals
+              </p>
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7f1111] text-white">
+                <ClipboardCheck size={20} />
+              </div>
+            </div>
+
+            <h2 className="mt-10 text-5xl font-semibold">24</h2>
+
+            <button className="mt-5 text-sm font-medium uppercase tracking-widest text-[#afff66]">
+              Review Now
+            </button>
+          </div>
+        </div>
+
+        {/* ================= RECENT REGISTRATIONS ================= */}
+
+        <div className="mb-4 flex items-end justify-between border-b border-[#24342A] pb-5">
+          <div>
+            <h2 className="text-2xl font-semibold">Recent Registrations</h2>
+
+            <p className="mt-2 text-sm text-[#c1cab3]">
+              Manage volunteers for "Coastal Cleanup 2024"
+            </p>
+          </div>
+
+          <button className="flex items-center gap-3 text-xs uppercase tracking-widest text-[#afff66]">
+            <Filter size={20} />
+            Filter
+          </button>
+        </div>
+
+        {/* ================= VOLUNTEER TABLE ================= */}
+
+        <section className="overflow-hidden rounded-2xl border border-[#324539] bg-[#1c201f]">
+          {/* Table Header */}
+          <div className="grid grid-cols-[1.5fr_1.1fr_0.8fr_0.7fr] bg-[#2a302d] px-5 py-5 text-[11px] uppercase tracking-widest text-[#c1cab3]">
+            <div>Volunteer Name</div>
+            <div>Assigned Role</div>
+            <div>Status</div>
+            <div className="text-right">Actions</div>
+          </div>
+
+          {/* Table Rows */}
+          {volunteers.map((volunteer, index) => (
+            <div
+              key={index}
+              className="grid min-h-[82px] grid-cols-[1.5fr_1.1fr_0.8fr_0.7fr] items-center border-b border-[#24342A] px-5"
+            >
+              {/* Volunteer */}
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#c1cab3] text-sm font-medium text-[#24342A]">
+                  {volunteer.initials}
+                </div>
+
+                <div>
+                  <h3 className="font-semibold">{volunteer.name}</h3>
+
+                  <p className="mt-1 text-sm text-[#c1cab3]">
+                    {volunteer.email}
+                  </p>
+                </div>
+              </div>
+
+              {/* Role */}
+              <div className="text-sm">{volunteer.role}</div>
+
+              {/* Status */}
+              <div>
+                <span
+                  className={`rounded-full px-3 py-2 text-[10px] uppercase tracking-wider ${
+                    volunteer.status === "Approved"
+                      ? "bg-[#324539] text-[#afff66]"
+                      : "bg-[#303735] text-[#c1cab3]"
+                  }`}
+                >
+                  {volunteer.status}
+                </span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-5">
+                <Mail
+                  size={20}
+                  className="cursor-pointer text-[#c1cab3] transition hover:text-[#afff66]"
+                />
+
+                {volunteer.status === "Registered" ? (
+                  <button className="rounded-lg border border-[#537244] px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#afff66] transition hover:bg-[#24342A]">
+                    Approve
+                  </button>
+                ) : (
+                  <MoreVertical
+                    size={21}
+                    className="cursor-pointer text-[#c1cab3] transition hover:text-[#afff66]"
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+
+          {/* View All */}
+          <div className="flex justify-center py-5">
+            <button className="text-sm font-medium text-[#afff66] transition hover:text-[#b7ff72]">
+              View All Volunteers
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default OrganizerDashboard;
