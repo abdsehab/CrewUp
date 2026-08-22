@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   CalendarDays,
   Users,
-  Settings,
   Plus,
   Search,
   SlidersHorizontal,
@@ -16,6 +15,7 @@ import {
   Image,
   ChevronLeft,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 
 function OrganizerManageEvents() {
@@ -121,19 +121,25 @@ function OrganizerManageEvents() {
               Volunteers
             </NavLink>
 
-            {/* Settings */}
-            <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
-              <Settings size={20} />
-              Settings
-            </button>
           </nav>
         </div>
 
-        {/* Create Event */}
-        <button className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#afff66] py-4 font-medium tracking-wide text-[#101413] transition hover:bg-[#b7ff72]">
-          <Plus size={21} />
-          Create Event
-        </button>
+        <div className="space-y-3">
+          {/* Sign Out */}
+          <NavLink
+            to="/"
+            className="flex w-full items-center justify-center gap-3 rounded-lg border border-[#324539] py-4 font-medium tracking-wide text-[#c1cab3] transition hover:bg-[#24342A] hover:text-[#afff66]"
+          >
+            <LogOut size={20} />
+            Sign Out
+          </NavLink>
+
+          {/* Create Event */}
+          <button className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#afff66] py-4 font-medium tracking-wide text-[#101413] transition hover:bg-[#b7ff72]">
+            <Plus size={21} />
+            Create Event
+          </button>
+        </div>
       </aside>
 
       {/* ----------------- MAIN CONTENT -------------------- */}

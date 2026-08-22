@@ -5,15 +5,14 @@ import {
   LayoutDashboard,
   CalendarDays,
   Users,
-  Settings,
   Plus,
   CalendarCheck,
   User,
-  //Timer,
   ClipboardCheck,
   Filter,
   Mail,
   MoreVertical,
+  LogOut,
 } from "lucide-react";
 
 function OrganizerDashboard() {
@@ -101,20 +100,25 @@ function OrganizerDashboard() {
               <Users size={20} />
               Volunteers
             </NavLink>
-
-            {/* Settings */}
-            <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
-              <Settings size={20} />
-              Settings
-            </button>
           </nav>
         </div>
 
-        {/* Create Event */}
-        <button className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#afff66] py-4 font-medium tracking-wide text-[#101413] transition hover:bg-[#b7ff72]">
-          <Plus size={21} />
-          Create Event
-        </button>
+        <div className="space-y-3">
+          {/* Sign Out */}
+          <NavLink
+            to="/"
+            className="flex w-full items-center justify-center gap-3 rounded-lg border border-[#324539] py-4 font-medium tracking-wide text-[#c1cab3] transition hover:bg-[#24342A] hover:text-[#afff66]"
+          >
+            <LogOut size={20} />
+            Sign Out
+          </NavLink>
+
+          {/* Create Event */}
+          <button className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#afff66] py-4 font-medium tracking-wide text-[#101413] transition hover:bg-[#b7ff72]">
+            <Plus size={21} />
+            Create Event
+          </button>
+        </div>
       </aside>
 
       {/* ----------------- MAIN CONTENT -------------------- */}
@@ -189,10 +193,6 @@ function OrganizerDashboard() {
         <div className="mb-4 flex items-end justify-between border-b border-[#24342A] pb-5">
           <div>
             <h2 className="text-2xl font-semibold">Recent Registrations</h2>
-
-            <p className="mt-2 text-sm text-[#c1cab3]">
-              Manage volunteers for "Coastal Cleanup 2024"
-            </p>
           </div>
 
           <button className="flex items-center gap-3 text-xs uppercase tracking-widest text-[#afff66]">
@@ -270,12 +270,6 @@ function OrganizerDashboard() {
             </div>
           ))}
 
-          {/* View All */}
-          <div className="flex justify-center py-5">
-            <button className="text-sm font-medium text-[#afff66] transition hover:text-[#b7ff72]">
-              View All Volunteers
-            </button>
-          </div>
         </section>
       </main>
     </div>
