@@ -13,7 +13,6 @@ import {
   Trash2,
   Eye,
   RefreshCw,
-  FileText,
   Image,
   ChevronLeft,
   ChevronRight,
@@ -58,7 +57,7 @@ function OrganizerManageEvents() {
 
   return (
     <div className="flex min-h-screen bg-[#101413] text-[#e0e3e1]">
-      {/* ================= SIDEBAR ================= */}
+      {/* ------------------- SIDEBAR -------------------- */}
       <aside className="flex min-h-screen w-[275px] flex-col justify-between border-r border-[#24342A] bg-[#1c201f] px-6 py-7">
         <div>
           {/* Logo */}
@@ -80,7 +79,7 @@ function OrganizerManageEvents() {
           <nav className="space-y-2">
             {/* Dashboard */}
             <NavLink
-              to="/organizer-dashboard"
+              to="/organizer/dashboard"
               className={({ isActive }) =>
                 `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
                   isActive
@@ -95,7 +94,7 @@ function OrganizerManageEvents() {
 
             {/* Manage Events */}
             <NavLink
-              to="/organizer-portal"
+              to="/organizer/events"
               className={({ isActive }) =>
                 `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
                   isActive
@@ -108,11 +107,19 @@ function OrganizerManageEvents() {
               Manage Events
             </NavLink>
 
-            {/* Volunteers */}
-            <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
+            <NavLink
+              to="/organizer/volunteers"
+              className={({ isActive }) =>
+                `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-xs uppercase tracking-widest transition ${
+                  isActive
+                    ? "bg-[#424f47] text-[#afff66]"
+                    : "text-[#c1cab3] hover:bg-[#24342A]"
+                }`
+              }
+            >
               <Users size={20} />
               Volunteers
-            </button>
+            </NavLink>
 
             {/* Settings */}
             <button className="flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest text-[#c1cab3] transition hover:bg-[#24342A]">
@@ -129,7 +136,7 @@ function OrganizerManageEvents() {
         </button>
       </aside>
 
-      {/* ================= MAIN CONTENT ================= */}
+      {/* ----------------- MAIN CONTENT -------------------- */}
       <main className="flex-1 px-10 py-11">
         {/* Top Section */}
         <div className="mb-20 flex items-start justify-between">
@@ -155,22 +162,10 @@ function OrganizerManageEvents() {
                 <h3 className="text-xl font-semibold">12</h3>
               </div>
             </div>
-
-            <div className="flex w-[170px] items-center gap-4 rounded-xl border border-[#324539] bg-[#1c201f] p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#24342A] text-[#c1cab3]">
-                <FileText size={23} />
-              </div>
-
-              <div>
-                <p className="text-sm text-[#c1cab3]">Drafts</p>
-
-                <h3 className="text-xl font-semibold">3</h3>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* ================= EVENTS CARD ================= */}
+        {/* ----------------- EVENTS CARD --------------------- */}
         <section className="max-w-[1050px] overflow-hidden rounded-2xl border border-[#324539] bg-[#1c201f]">
           {/* Search */}
           <div className="flex items-center justify-between bg-[#24342A] p-6">
