@@ -22,6 +22,11 @@ import Terms from './pages/legal/Terms';
 import ContactSupport from './pages/legal/ContactSupport';
 import VolunteerGuidelines from './pages/legal/VolunteerGuidelines';
 
+// Organizer Portal
+import OrganizerDashboard from './pages/organizer_portal/OrganizerDashboard';
+import OrganizerManageEvents from './pages/organizer_portal/OrganizerManageEvents';
+import OrganizerManageVolunteers from './pages/organizer_portal/OrganizerManageVolunteers';
+
 function App() {
   return (
     <Router>
@@ -48,6 +53,12 @@ function App() {
           <Route path="legal/support" element={<ContactSupport />} />
           <Route path="legal/guidelines" element={<VolunteerGuidelines />} />
         </Route>
+
+        {/* Organizer Portal */}
+        <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
+        <Route path="/organizer/events" element={<OrganizerManageEvents />} />
+        <Route path="/organizer/volunteers" element={<OrganizerManageVolunteers />} />
+
       </Routes>
     </Router>
   );
