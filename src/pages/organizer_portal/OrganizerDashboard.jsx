@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   LayoutDashboard,
@@ -7,7 +8,8 @@ import {
   Settings,
   Plus,
   CalendarCheck,
-  Timer,
+  User,
+  //Timer,
   ClipboardCheck,
   Filter,
   Mail,
@@ -122,8 +124,8 @@ function OrganizerDashboard() {
           <h1 className="text-5xl font-semibold">Dashboard Overview</h1>
 
           <p className="mt-3 text-base text-[#c1cab3]">
-            Welcome back. Here is the current status of your stewardship
-            activities.
+            Welcome back. Here is the current status of your volunteer events
+            and activities.
           </p>
         </div>
 
@@ -148,15 +150,15 @@ function OrganizerDashboard() {
           <div className="h-[214px] rounded-2xl border border-[#324539] bg-[#1c201f] p-7">
             <div className="flex items-center justify-between">
               <p className="text-xs uppercase tracking-widest text-[#c1cab3]">
-                Total Volunteer Hours
+                Total Volunteers
               </p>
 
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#24342A] text-[#afff66]">
-                <Timer size={20} />
+                <User size={20} />
               </div>
             </div>
 
-            <h2 className="mt-12 text-5xl font-semibold"> 1,450<span className="ml-1 text-3xl">h</span> </h2>
+            <h2 className="mt-12 text-5xl font-semibold">1,450</h2>
           </div>
 
           {/* Pending Approvals */}
@@ -173,9 +175,12 @@ function OrganizerDashboard() {
 
             <h2 className="mt-10 text-5xl font-semibold">24</h2>
 
-            <button className="mt-5 text-sm font-medium uppercase tracking-widest text-[#afff66]">
+            <Link
+              to="/organizer/volunteers"
+              className="mt-5 inline-block text-sm font-medium uppercase tracking-widest text-[#afff66]"
+            >
               Review Now
-            </button>
+            </Link>
           </div>
         </div>
 
