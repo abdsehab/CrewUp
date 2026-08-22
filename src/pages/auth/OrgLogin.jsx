@@ -1,10 +1,17 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // 1. Added useNavigate
 import { Mail, Lock, ArrowRight, Eye, Building2, ShieldCheck } from 'lucide-react';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import bgImg from '../../assets/auth_org.jpg';
 
 const OrgLogin = () => {
+  const navigate = useNavigate(); 
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate('/organizer/dashboard'); 
+  };
+
   return (
     <div className="w-full flex-grow flex">
       {/* Left side - Image & Branding */}
@@ -44,7 +51,8 @@ const OrgLogin = () => {
             <h2 className="text-3xl font-bold text-white mb-2">Organizer Sign In</h2>
             <p className="text-light-muted text-sm mb-8">Welcome back to your dashboard.</p>
 
-            <form className="space-y-6">
+            {/* 4. Added onSubmit handler to the form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
               <Input label="Organization Email" id="email" type="email" icon={Mail} placeholder="admin@eco-tech.org" />
               
               <div>
