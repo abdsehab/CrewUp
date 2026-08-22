@@ -27,6 +27,11 @@ import OrganizerDashboard from './pages/organizer_portal/OrganizerDashboard';
 import OrganizerManageEvents from './pages/organizer_portal/OrganizerManageEvents';
 import OrganizerManageVolunteers from './pages/organizer_portal/OrganizerManageVolunteers';
 
+// Admin Portal
+import AdminDashboard from './pages/admin_portal/AdminDashboard';
+import AdminManageEvents from './pages/admin_portal/AdminManageEvents';
+import AdminManageOrgs from './pages/admin_portal/AdminManageOrgs';
+
 function App() {
   return (
     <Router>
@@ -58,6 +63,11 @@ function App() {
         <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
         <Route path="/organizer/events" element={<OrganizerManageEvents />} />
         <Route path="/organizer/volunteers" element={<OrganizerManageVolunteers />} />
+
+        {/* Admin Portal — URL-only access, no links point here */}
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/events" element={<AdminManageEvents />} />
+        <Route path="/admin/orgs" element={<AdminManageOrgs />} />
 
       </Routes>
     </Router>
