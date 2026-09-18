@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/common/Layout';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Main pages
 import Home from './pages/main/Home';
@@ -67,10 +68,12 @@ function App() {
         </Route>
 
         {/* Organizer Portal */}
-        <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
-        <Route path="/organizer/events" element={<OrganizerManageEvents />} />
-        <Route path="/organizer/volunteers" element={<OrganizerManageVolunteers />} />
-        <Route path="/organizer/create-event" element={<OrganizerCreateEvent />} />
+        <Route element={<ProtectedRoute allowedRoles={['organization']} redirectTo="/auth/org-login" />}>
+          <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
+          <Route path="/organizer/events" element={<OrganizerManageEvents />} />
+          <Route path="/organizer/volunteers" element={<OrganizerManageVolunteers />} />
+          <Route path="/organizer/create-event" element={<OrganizerCreateEvent />} />
+        </Route>
 
         {/* Admin Portal — URL-only access, no links point here */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />

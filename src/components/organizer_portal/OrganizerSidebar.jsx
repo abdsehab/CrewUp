@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 import {
   LayoutDashboard,
@@ -10,6 +11,17 @@ import {
 } from "lucide-react";
 
 function OrganizerSidebar({ isOpen, setIsOpen }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    setIsOpen(false);
+    try {
+      await logout();
+    } finally {
+      navigate("/auth/org-login");
+    }
+  };
   return (
     <aside
       className={`fixed left-0 top-0 z-50 flex min-h-screen w-[275px] flex-col justify-between
@@ -98,14 +110,14 @@ function OrganizerSidebar({ isOpen, setIsOpen }) {
       {/* Bottom Buttons */}
       <div className="space-y-3">
         {/* Sign Out */}
-        <NavLink
-          to="/"
-          onClick={() => setIsOpen(false)}
+        <button
+          type="button"
+          onClick={handleSignOut}
           className="flex w-full items-center justify-center gap-3 rounded-lg border border-[#324539] py-4 font-medium tracking-wide text-[#c1cab3] transition hover:bg-[#24342A] hover:text-[#afff66]"
         >
           <LogOut size={20} />
           Sign Out
-        </NavLink>
+        </button>
 
         {/* Create Event */}
         <NavLink

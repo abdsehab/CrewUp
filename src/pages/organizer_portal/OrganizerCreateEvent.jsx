@@ -146,14 +146,15 @@ function OrganizerCreateEvent() {
 
       let response;
       try {
-        response = await fetch("/api/events", {
+        response = await fetch("http://localhost:4000/api/events", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify(payload),
         });
       } catch {
-        response = await fetch("http://localhost:4000/api/events", {
+        // Fallback through vite proxy if direct call encounters network error
+        response = await fetch("/api/events", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
