@@ -175,6 +175,9 @@ export const createEvent = async (req, res) => {
     if (!eventData.status) {
       eventData.status = "Published";
     }
+    if (!eventData.participant_previews) {
+      eventData.participant_previews = [];
+    }
 
     const newEvent = new Event(eventData);
     await newEvent.save();

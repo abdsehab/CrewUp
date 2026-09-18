@@ -9,12 +9,13 @@ const checkToken = (req, res, next) => {
     return res.status(401).json({ error: "Invalid token" });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, {}, (err) => {
+  jwt.verify(token, process.env.JWT_SECRET, {}, (err, user) => {
     if (err) {
+      const isProduction = process.env.NODE_ENV === "production";
       res.clearCookie("token", {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         path: "/",
       });
       return res.status(401).json({ error: "Invalid token" });
