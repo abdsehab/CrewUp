@@ -29,6 +29,7 @@ import VolunteerDashboard from './pages/volunteer_portal/VolunteerDashboard';
 import OrganizerDashboard from './pages/organizer_portal/OrganizerDashboard';
 import OrganizerManageEvents from './pages/organizer_portal/OrganizerManageEvents';
 import OrganizerManageVolunteers from './pages/organizer_portal/OrganizerManageVolunteers';
+import OrganizerCreateEvent from './pages/organizer_portal/OrganizerCreateEvent';
 
 // Admin Portal
 import AdminDashboard from './pages/admin_portal/AdminDashboard';
@@ -69,6 +70,7 @@ function App() {
         <Route path="/organizer/dashboard" element={<OrganizerDashboard />} />
         <Route path="/organizer/events" element={<OrganizerManageEvents />} />
         <Route path="/organizer/volunteers" element={<OrganizerManageVolunteers />} />
+        <Route path="/organizer/create-event" element={<OrganizerCreateEvent />} />
 
         {/* Admin Portal — URL-only access, no links point here */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />

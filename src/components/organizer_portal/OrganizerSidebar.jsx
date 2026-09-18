@@ -108,10 +108,20 @@ function OrganizerSidebar({ isOpen, setIsOpen }) {
         </NavLink>
 
         {/* Create Event */}
-        <button className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#afff66] py-4 font-medium tracking-wide text-[#101413] transition hover:bg-[#b7ff72]">
+        <NavLink
+          to="/organizer/create-event"
+          onClick={() => setIsOpen(false)}
+          className={({ isActive }) =>
+            `flex w-full items-center justify-center gap-3 rounded-lg py-4 font-medium tracking-wide transition ${
+              isActive
+                ? "bg-[#b7ff72] text-[#101413] shadow-lg"
+                : "bg-[#afff66] text-[#101413] hover:bg-[#b7ff72]"
+            }`
+          }
+        >
           <Plus size={21} />
           Create Event
-        </button>
+        </NavLink>
       </div>
     </aside>
   );

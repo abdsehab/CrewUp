@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import fetchJSON from "../../utils/api";
 import OrganizerSidebar from "../../components/organizer_portal/OrganizerSidebar";
 import {
@@ -11,6 +12,7 @@ import {
   Image,
   ChevronLeft,
   ChevronRight,
+  Plus,
 } from "lucide-react";
 
 function OrganizerManageEvents() {
@@ -68,7 +70,7 @@ function OrganizerManageEvents() {
               eco-stewardship activities.
             </p>
           </div>
-          <div className="flex w-full gap-4 lg:w-auto">
+          <div className="flex w-full flex-wrap items-center gap-4 lg:w-auto">
             <div className="flex w-full items-center gap-4 rounded-xl border border-[#324539] bg-[#1c201f] p-4 sm:w-[170px]">
               <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#24342A] text-[#afff66]">
                 <RefreshCw size={23} />
@@ -78,6 +80,13 @@ function OrganizerManageEvents() {
                 <h3 className="text-xl font-semibold">{events.length}</h3>
               </div>
             </div>
+            <Link
+              to="/organizer/create-event"
+              className="flex h-[56px] w-full items-center justify-center gap-2 rounded-xl bg-[#afff66] px-6 text-xs font-semibold uppercase tracking-widest text-[#101413] transition hover:bg-[#b7ff72] sm:w-auto"
+            >
+              <Plus size={18} />
+              Create Event
+            </Link>
           </div>
         </div>
 

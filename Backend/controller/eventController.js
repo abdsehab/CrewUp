@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
 import Event from "../model/event.js";
+import Organization from "../model/organization.js";
+import User from "../model/user.js";
 
 const getDateRange = (dateFilter) => {
   if (dateFilter === "This Weekend") {
@@ -97,9 +100,87 @@ export const getEventById = async (req, res) => {
 
 export const createEvent = async (req, res) => {
   try {
-    const newEvent = new Event(req.body);
+    const eventData = { ...req.body };
+
+    if (!eventData.id) {
+      const lastEvent = await Event.findOne().sort({ id: -1 });
+      eventData.id = lastEvent && lastEvent.id ? lastEvent.id + 1 : 1;
+    }
+
+    if (typeof eventData.description === "string") {
+      eventData.description = eventData.description
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (eventData.description.length === 0) {
+        eventData.description = ["No description provided."];
+      }
+    }
+
+    if (eventData.organizer) {
+      const isValid = mongoose.Types.ObjectId.isValid(eventData.organizer);
+      if (!isValid) {
+        let org = await Organization.findOne({ name: eventData.organizer });
+        if (!org) {
+          org = await Organization.create({
+            name: eventData.organizer,
+            desc: "Community organization on CrewUp",
+            bio: "Organizing environmental and tech stewardship events.",
+            image:
+              "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=100&q=80",
+          });
+        }
+        eventData.organizer = org._id;
+      }
+    } else {
+      let org = null;
+      if (req.user?.id) {
+        const user = await User.findById(req.user.id);
+        if (user?.displayName) {
+          org = await Organization.findOne({ name: user.displayName });
+          if (!org) {
+            org = await Organization.create({
+              name: user.displayName,
+              desc: "Eco-tech community organization",
+              bio: "Dedicated to driving positive environmental impact.",
+              image:
+                "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=100&q=80",
+            });
+          }
+        }
+      }
+      if (!org) {
+        org = await Organization.findOne();
+      }
+      if (org) {
+        eventData.organizer = org._id;
+      }
+    }
+
+    if (eventData.organizer) {
+      await Organization.findByIdAndUpdate(eventData.organizer, {
+        $inc: { events: 1 },
+      });
+    }
+
+    if (eventData.capacity) {
+      eventData.capacity = Number(eventData.capacity);
+    }
+    if (eventData.filled === undefined) {
+      eventData.filled = 0;
+    }
+    if (eventData.participant_count === undefined) {
+      eventData.participant_count = 0;
+    }
+    if (!eventData.status) {
+      eventData.status = "Published";
+    }
+
+    const newEvent = new Event(eventData);
     await newEvent.save();
-    return res.status(201).json({ message: "Event created successfully" });
+    return res
+      .status(201)
+      .json({ message: "Event created successfully", event: newEvent });
   } catch (err) {
     return res.status(400).json(err);
   }
