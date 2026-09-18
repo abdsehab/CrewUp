@@ -29,14 +29,18 @@ function OrganizerDashboard() {
 
     const loadDashboardData = async () => {
       try {
-        const [regsData, eventsData] = await Promise.all([
-          fetchJSON("/api/registrations"),
-          fetchJSON("/api/events"),
+        const [regsResult, eventsResult] = await Promise.allSettled([
+          fetchJSON("/api/registrations", { credentials: "include" }),
+          fetchJSON("/api/events", { credentials: "include" }),
         ]);
 
         if (!cancelled) {
-          setRegistrations(regsData);
-          setActiveEventsCount(eventsData.length);
+          if (regsResult.status === "fulfilled" && Array.isArray(regsResult.value)) {
+            setRegistrations(regsResult.value);
+          }
+          if (eventsResult.status === "fulfilled" && Array.isArray(eventsResult.value)) {
+            setActiveEventsCount(eventsResult.value.length);
+          }
           setLoading(false);
         }
       } catch (err) {
