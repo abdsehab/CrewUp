@@ -24,9 +24,10 @@ function formatDateRange(start, end) {
   return `${dateStr} • ${timeStr}`;
 }
 
-function buildParticipantDisplay(previews, count) {
-  const shown = previews.slice(0, 2).map((p) => p.initials);
-  const extra = count - shown.length;
+function buildParticipantDisplay(previews = [], count = 0) {
+  const safePreviews = Array.isArray(previews) ? previews : [];
+  const shown = safePreviews.slice(0, 2).map((p) => p.initials);
+  const extra = (count || 0) - shown.length;
   if (extra > 0) shown.push(`+${extra}`);
   return shown;
 }

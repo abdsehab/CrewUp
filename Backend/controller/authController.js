@@ -26,11 +26,13 @@ export const login = async (req, res) => {
     { expiresIn: lifetime },
   );
 
+  const isProduction = process.env.NODE_ENV === "production";
+
   res.cookie("token", token, {
     maxAge: lifetime,
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     path: "/",
   });
   
@@ -39,10 +41,11 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
+  const isProduction = process.env.NODE_ENV === "production";
   res.clearCookie("token", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     path: "/",
   });
   return res.status(200).json({ message: "Logout successful" });
