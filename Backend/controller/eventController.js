@@ -208,9 +208,21 @@ export const updateEvent = async (req, res) => {
 
 export const deleteEvent = async (req, res) => {
   try {
-    const deleted = await Event.findOneAndDelete({ id: Number(req.params.id) });
+    const rawId = req.params.id;
+    let deleted;
+    if (!isNaN(Number(rawId))) {
+      deleted = await Event.findOneAndDelete({ id: Number(rawId) });
+    }
+    if (!deleted && mongoose.Types.ObjectId.isValid(rawId)) {
+      deleted = await Event.findByIdAndDelete(rawId);
+    }
     if (!deleted) {
       return res.status(404).json({ error: "Event not found" });
+    }
+    if (deleted.organizer) {
+      await Organization.findByIdAndUpdate(deleted.organizer, {
+        $inc: { events: -1 },
+      });
     }
     return res.status(200).json({ message: "Event deleted successfully" });
   } catch (err) {
