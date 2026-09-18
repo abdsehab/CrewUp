@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let cancelled = false;
 
-    fetchJSON("/api/users/profile")
+    fetchJSON("/api/users/profile", { credentials: "include" })
       .then((data) => {
         if (!cancelled) setUser(data);
       })
@@ -29,7 +29,10 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetchJSON("/api/auth/logout", { method: "POST" });
+      await fetchJSON("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
     } finally {
       setUser(null);
     }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Eye, Building2, ShieldCheck } from 'lucide-react';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
@@ -12,6 +12,7 @@ const OrgLogin = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); 
+  const location = useLocation();
   const { login } = useAuth(); 
 
   const handleChange = (e) => {
@@ -42,7 +43,8 @@ const OrgLogin = () => {
       }
 
       login(data);
-      navigate('/organizer/dashboard');
+      const from = location.state?.from?.pathname || '/organizer/dashboard';
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
