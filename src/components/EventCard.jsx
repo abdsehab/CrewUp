@@ -93,7 +93,7 @@ export default function EventCard({ event }) {
 
         <div className="mt-auto pt-4 border-t border-dark-border flex items-center justify-between gap-3">
           <ParticipantAvatars previews={participant_previews} count={participant_count} />
-          <Link to={`/events/${event.id}`} className="flex-shrink-0 border border-brand/30 text-brand px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-widest hover:bg-brand/10 transition-colors">
+          <Link to={`/events/${event.id || event._id}`} state={{ event }} className="flex-shrink-0 border border-brand/30 text-brand px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-widest hover:bg-brand/10 transition-colors">
             View Details
           </Link>
         </div>

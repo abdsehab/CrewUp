@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Globe, Users, Award, Dumbbell, Shirt, Coffee, BadgeCheck } from 'lucide-react';
+import { useParams, Link, useLocation } from 'react-router-dom';
+import { ArrowLeft, Calendar, MapPin, Globe, Users, Award, Dumbbell, Shirt, Coffee, BadgeCheck, CheckCircle2 } from 'lucide-react';
 import fetchJSON from '../../utils/api';
 
 const REQ_ICONS = { walk: Dumbbell, shoe: Shirt, food: Coffee, award: Award };
@@ -15,11 +15,17 @@ function formatTime(start, end) {
 
 export default function EventDetails() {
   const { id } = useParams();
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const [event, setEvent] = useState(location.state?.event || null);
+  const [loading, setLoading] = useState(!location.state?.event);
   const [error, setError] = useState(null);
+  const [registered, setRegistered] = useState(false);
 
   useEffect(() => {
+    if (location.state?.event) {
+      return;
+    }
+
     let cancelled = false;
 
     fetchJSON(`/api/events/${id}`)
@@ -39,7 +45,7 @@ export default function EventDetails() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, location.state?.event]);
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -54,7 +60,7 @@ export default function EventDetails() {
     </div>
   );
 
-  const { title, category, start_time, end_time, location, address, is_remote, image_url,
+  const { title, category, start_time, end_time, location: eventLocation, address, is_remote, image_url,
           description, requirements, organizer, capacity, filled } = event;
   const filledPct = Math.round((filled / capacity) * 100);
 
@@ -84,10 +90,22 @@ export default function EventDetails() {
 
           {/* CTA — hidden on mobile (sticky bar handles it) */}
           <div className="hidden md:flex flex-col items-end gap-1 shrink-0">
-            <button className="bg-brand text-dark-bg font-semibold px-8 py-4 rounded-xl hover:bg-brand-hover transition-colors flex items-center gap-2">
-              Register to Volunteer →
+            <button 
+              onClick={() => setRegistered(true)}
+              disabled={registered}
+              className={`font-semibold px-8 py-4 rounded-xl transition-colors flex items-center gap-2 ${
+                registered 
+                  ? 'bg-dark-surface border border-brand/50 text-brand cursor-default' 
+                  : 'bg-brand text-dark-bg hover:bg-brand-hover'
+              }`}
+            >
+              {registered ? (
+                <>Registered <CheckCircle2 className="w-5 h-5" /></>
+              ) : (
+                <>Register to Volunteer →</>
+              )}
             </button>
-            <span className="text-brand text-xs font-mono">{filled} / {capacity} Filled</span>
+            <span className="text-brand text-xs font-mono">{filled + (registered ? 1 : 0)} / {capacity} Filled</span>
           </div>
         </div>
       </section>
@@ -156,7 +174,7 @@ export default function EventDetails() {
               <p className="text-[11px] font-mono uppercase tracking-widest text-light-muted flex items-center gap-1.5">
                 {is_remote ? <Globe className="w-3.5 h-3.5 text-brand" /> : <MapPin className="w-3.5 h-3.5 text-brand" />} Location
               </p>
-              <p className="text-white font-semibold text-sm">{location}</p>
+              <p className="text-white font-semibold text-sm">{eventLocation}</p>
               <p className="text-light-muted text-sm">{address}</p>
             </div>
 
@@ -172,7 +190,7 @@ export default function EventDetails() {
 
             {/* Map placeholder */}
             <div className="w-full h-28 rounded-xl overflow-hidden bg-dark-bg border border-dark-border flex items-center justify-center">
-              <p className="text-light-muted text-[11px] font-mono uppercase tracking-widest opacity-50">Map · {location}</p>
+              <p className="text-light-muted text-[11px] font-mono uppercase tracking-widest opacity-50">Map · {eventLocation}</p>
             </div>
           </div>
         </aside>
@@ -180,8 +198,20 @@ export default function EventDetails() {
 
       {/* ── Sticky mobile CTA ── */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full p-4 bg-dark-bg/90 backdrop-blur-lg z-50 border-t border-dark-border">
-        <button className="w-full bg-brand text-dark-bg font-semibold py-4 rounded-xl hover:bg-brand-hover transition-colors">
-          Register to Volunteer →
+        <button 
+          onClick={() => setRegistered(true)}
+          disabled={registered}
+          className={`w-full font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 ${
+            registered 
+              ? 'bg-dark-surface border border-brand/50 text-brand cursor-default' 
+              : 'bg-brand text-dark-bg hover:bg-brand-hover'
+          }`}
+        >
+          {registered ? (
+            <>Registered <CheckCircle2 className="w-5 h-5" /></>
+          ) : (
+            <>Register to Volunteer →</>
+          )}
         </button>
       </div>
     </div>
