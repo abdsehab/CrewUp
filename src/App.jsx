@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import GuestRoute from './components/common/GuestRoute';
 
 // Main pages
 import Home from './pages/main/Home';
@@ -49,13 +50,15 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="organizations" element={<Organizations />} />
           
-          {/* Auth */}
-          <Route path="auth/login" element={<LoginSelection />} />
-          <Route path="auth/register" element={<RegisterSelection />} />
-          <Route path="auth/volunteer-login" element={<VolunteerLogin />} />
-          <Route path="auth/volunteer-register" element={<VolunteerRegister />} />
-          <Route path="auth/org-login" element={<OrgLogin />} />
-          <Route path="auth/org-register" element={<OrgRegister />} />
+          {/* Auth (Guest-only routes) */}
+          <Route element={<GuestRoute />}>
+            <Route path="auth/login" element={<LoginSelection />} />
+            <Route path="auth/register" element={<RegisterSelection />} />
+            <Route path="auth/volunteer-login" element={<VolunteerLogin />} />
+            <Route path="auth/volunteer-register" element={<VolunteerRegister />} />
+            <Route path="auth/org-login" element={<OrgLogin />} />
+            <Route path="auth/org-register" element={<OrgRegister />} />
+          </Route>
           
           {/* Legal */}
           <Route path="legal/privacy" element={<PrivacyPolicy />} />
@@ -63,8 +66,10 @@ function App() {
           <Route path="legal/support" element={<ContactSupport />} />
           <Route path="legal/guidelines" element={<VolunteerGuidelines />} />
 
-          {/* Volunteer Portal */}
-          <Route path="volunteer/dashboard" element={<VolunteerDashboard />} />
+          {/* Volunteer Portal (Protected for volunteers) */}
+          <Route element={<ProtectedRoute allowedRoles={['volunteer']} redirectTo="/auth/volunteer-login" />}>
+            <Route path="volunteer/dashboard" element={<VolunteerDashboard />} />
+          </Route>
         </Route>
 
         {/* Organizer Portal */}

@@ -1,8 +1,12 @@
+import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Search, Activity, Award, Calendar, MapPin, Plus } from 'lucide-react';
 import Button from '../../components/common/Button';
+import { useAuth } from '../../hooks/useAuth';
 import { CLOUDINARY_IMAGES } from '../../constants/cloudinaryImages';
 
 const Home = () => {
+  const { user } = useAuth();
+
   return (
     <div className="w-full">
       {/* 1. Hero Section */}
@@ -23,12 +27,34 @@ const Home = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-            <Button to="/auth/volunteer-register" variant="primary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
-              Join as Volunteer <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button to="/auth/org-register" variant="secondary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
-              Register Organization
-            </Button>
+            {user?.role === 'volunteer' ? (
+              <>
+                <Button to="/volunteer/dashboard" variant="primary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
+                  Go to Dashboard <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button to="/events" variant="secondary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
+                  Explore Events
+                </Button>
+              </>
+            ) : user?.role === 'organization' ? (
+              <>
+                <Button to="/organizer/dashboard" variant="primary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
+                  Organizer Dashboard <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button to="/organizer/events" variant="secondary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
+                  Manage Events
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button to="/auth/volunteer-register" variant="primary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
+                  Join as Volunteer <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button to="/auth/org-register" variant="secondary" className="w-full sm:w-auto h-14 px-8 text-lg rounded-xl flex items-center justify-center font-semibold">
+                  Register Organization
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -93,15 +119,15 @@ const Home = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Trending Events</h2>
             <p className="text-light-muted">High-priority eco-missions happening near you.</p>
           </div>
-          <a href="#" className="mt-4 md:mt-0 inline-flex items-center text-brand font-mono text-xs uppercase tracking-widest hover:underline">
+          <Link to="/events" className="mt-4 md:mt-0 inline-flex items-center text-brand font-mono text-xs uppercase tracking-widest hover:underline">
             View All Missions <ArrowRight className="w-4 h-4 ml-2" />
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Main Event Card */}
-          <div className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl h-[450px] group cursor-pointer">
+          <Link to="/events" className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl h-[450px] group cursor-pointer block">
             <div className="absolute inset-0 bg-gradient-to-tr from-brand/20 to-dark-bg mix-blend-overlay z-0"></div>
             <img src={CLOUDINARY_IMAGES.event_metro_hydroponics} className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" alt="Metro Hydroponics Setup" />
             <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-dark-bg/40 to-transparent"></div>
@@ -123,11 +149,11 @@ const Home = () => {
                 <div className="flex items-center"><MapPin className="w-4 h-4 mr-2" /> Downtown Sector</div>
               </div>
             </div>
-          </div>
+          </Link>
 
           <div className="grid grid-rows-2 gap-8 h-[450px]">
             {/* Secondary Event Card */}
-            <div className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl group cursor-pointer p-8 flex flex-col justify-end bg-gradient-to-br from-dark-surface to-dark-bg">
+            <Link to="/events" className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl group cursor-pointer p-8 flex flex-col justify-end bg-gradient-to-br from-dark-surface to-dark-bg block">
               <img src={CLOUDINARY_IMAGES.event_river_basin_testing} className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-700" alt="River Basin Testing" />
               <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-dark-bg/60 to-transparent"></div>
               
@@ -139,19 +165,19 @@ const Home = () => {
                   Join Mission <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
               </div>
-            </div>
+            </Link>
 
             {/* Explore More Card */}
-            <div className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl p-8 flex flex-col items-center justify-center text-center bg-dark-surface">
-              <div className="w-12 h-12 rounded-full border border-dark-border bg-dark-bg flex items-center justify-center mb-6 group-hover:bg-brand transition-colors cursor-pointer group">
+            <Link to="/events" className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl p-8 flex flex-col items-center justify-center text-center bg-dark-surface block group">
+              <div className="w-12 h-12 rounded-full border border-dark-border bg-dark-bg flex items-center justify-center mb-6 group-hover:bg-brand transition-colors cursor-pointer">
                 <Plus className="w-6 h-6 text-brand group-hover:text-dark-bg transition-colors" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Explore 40+ More Events</h3>
               <p className="text-sm text-light-muted mb-6">Find the perfect mission for your skills and schedule.</p>
-              <button className="px-6 py-2 rounded-lg bg-dark-bg border border-dark-border text-xs font-mono uppercase tracking-widest text-light hover:border-brand hover:text-brand transition-colors">
+              <span className="inline-block px-6 py-2 rounded-lg bg-dark-bg border border-dark-border text-xs font-mono uppercase tracking-widest text-light group-hover:border-brand group-hover:text-brand transition-colors">
                 Open Directory
-              </button>
-            </div>
+              </span>
+            </Link>
           </div>
         </div>
       </div>
