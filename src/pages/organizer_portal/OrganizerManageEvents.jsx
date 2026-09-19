@@ -297,17 +297,31 @@ function OrganizerManageEvents() {
                 </div>
 
                 <div>
-                  <p className="mb-2 text-sm">
-                    <strong>{event.participant_count || 0}</strong>
-                  </p>
-                  <div className="h-[7px] w-[110px] overflow-hidden rounded-full bg-[#324539]">
-                    <div
-                      className="h-full rounded-full bg-[#afff66]"
-                      style={{
-                        width: `${Math.min(((event.participant_count || 0) / 50) * 100, 100)}%`,
-                      }}
-                    />
+                  <div className="mb-1.5 flex items-baseline gap-1.5 text-sm">
+                    <strong>{event.participant_count ?? event.filled ?? 0}</strong>
+                    <span className="text-xs text-[#879083]">
+                      / {event.capacity || 50}
+                    </span>
                   </div>
+                  {(() => {
+                    const count = event.participant_count ?? event.filled ?? 0;
+                    const cap =
+                      event.capacity && event.capacity > 0
+                        ? event.capacity
+                        : 50;
+                    const pct = Math.min(Math.round((count / cap) * 100), 100);
+                    return (
+                      <div className="flex items-center gap-2">
+                        <div className="h-[7px] w-[95px] overflow-hidden rounded-full bg-[#324539]">
+                          <div
+                            className="h-full rounded-full bg-[#afff66] transition-all duration-300"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="text-[10px] text-[#879083]">{pct}%</span>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 <div>
