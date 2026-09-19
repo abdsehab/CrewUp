@@ -29,7 +29,7 @@ function OrganizerManageEvents() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchJSON("/api/events", { credentials: "include" })
+    fetchJSON("/api/events?mine=true", { credentials: "include" })
       .then((data) => {
         if (!cancelled) {
           setEvents(Array.isArray(data) ? data : []);
