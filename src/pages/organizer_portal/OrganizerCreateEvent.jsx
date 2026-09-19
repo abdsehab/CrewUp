@@ -65,7 +65,6 @@ function OrganizerCreateEvent() {
     image_url: CLOUDINARY_IMAGES.event_urban_forest_mapping,
     start_time: "",
     end_time: "",
-    is_remote: false,
     location: "",
     address: "",
     capacity: 50,
@@ -109,7 +108,7 @@ function OrganizerCreateEvent() {
         end_time: formData.end_time
           ? new Date(formData.end_time).toISOString()
           : undefined,
-        is_remote: Boolean(formData.is_remote),
+        is_remote: false,
         location: formData.location.trim(),
         address: formData.address.trim(),
         capacity: Number(formData.capacity) || 50,
@@ -368,27 +367,10 @@ function OrganizerCreateEvent() {
             </h2>
 
             <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="is_remote"
-                  name="is_remote"
-                  checked={formData.is_remote}
-                  onChange={handleChange}
-                  className="h-4 w-4 rounded border-[#324539] bg-[#14251d] text-[#afff66] focus:ring-0 focus:ring-offset-0"
-                />
-                <label
-                  htmlFor="is_remote"
-                  className="text-sm font-medium text-[#e0e3e1]"
-                >
-                  This is a remote / virtual event
-                </label>
-              </div>
-
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-[#c1cab3]">
-                    {formData.is_remote ? "Platform / Venue *" : "Location / Venue *"}
+                    Location / Venue *
                   </label>
                   <input
                     type="text"
@@ -396,31 +378,22 @@ function OrganizerCreateEvent() {
                     required
                     value={formData.location}
                     onChange={handleChange}
-                    placeholder={
-                      formData.is_remote
-                        ? "e.g. Online (Global)"
-                        : "e.g. Riverside Nature Reserve"
-                    }
+                    placeholder="e.g. Riverside Nature Reserve"
                     className="w-full rounded-lg border border-[#324539] bg-[#14251d] px-4 py-3.5 text-sm text-[#e0e3e1] outline-none transition placeholder:text-[#879083] focus:border-[#afff66]"
                   />
                 </div>
 
                 <div>
                   <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-[#c1cab3]">
-                    {formData.is_remote
-                      ? "Virtual Link / Server"
-                      : "Physical Address"}
+                    Physical Address *
                   </label>
                   <input
                     type="text"
                     name="address"
+                    required
                     value={formData.address}
                     onChange={handleChange}
-                    placeholder={
-                      formData.is_remote
-                        ? "e.g. Remote — Discord & GitHub"
-                        : "e.g. 5 River Rd, North District"
-                    }
+                    placeholder="e.g. 5 River Rd, North District"
                     className="w-full rounded-lg border border-[#324539] bg-[#14251d] px-4 py-3.5 text-sm text-[#e0e3e1] outline-none transition placeholder:text-[#879083] focus:border-[#afff66]"
                   />
                 </div>
