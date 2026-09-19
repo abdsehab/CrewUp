@@ -70,14 +70,7 @@ function OrganizerDashboard() {
 
   // Computed metrics
   const activeEventsCount = events.length;
-  const totalParticipantsFromEvents = events.reduce(
-    (sum, e) => sum + (e.participant_count ?? e.filled ?? 0),
-    0,
-  );
-  const totalVolunteersCount = Math.max(
-    registrations.length,
-    totalParticipantsFromEvents,
-  );
+  const totalVolunteersCount = registrations.length;
   const pendingCount = registrations.filter(
     (reg) => reg.status === "Pending",
   ).length;

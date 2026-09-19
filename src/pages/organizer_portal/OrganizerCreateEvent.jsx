@@ -20,6 +20,14 @@ const CATEGORIES = [
   "Urban Renewal",
 ];
 
+const ICONS = [
+  { value: "leaf", label: "Leaf (Environmental)" },
+  { value: "tree", label: "Tree (Restoration / Forestry)" },
+  { value: "network", label: "Network (Infrastructure / Mesh)" },
+  { value: "wifi", label: "Wifi (Smart Grid / Digital)" },
+  { value: "terminal", label: "Terminal (Hackathon / Coding)" },
+];
+
 const DEFAULT_REQUIREMENTS = [
   {
     icon: "walk",
