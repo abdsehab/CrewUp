@@ -5,7 +5,7 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { useAuth } from '../../hooks/useAuth';
 import { API_BASE } from '../../utils/api';
-import bgImg from '../../assets/auth_org.jpg';
+import { CLOUDINARY_IMAGES } from '../../constants/cloudinaryImages';
 
 const OrgLogin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -67,7 +67,7 @@ const OrgLogin = () => {
 
           {/* Feature Image/Card */}
           <div className="relative rounded-2xl overflow-hidden border border-dark-border shadow-2xl">
-            <img src={bgImg} alt="Control Room" className="w-full h-auto object-cover grayscale opacity-80" />
+            <img src={CLOUDINARY_IMAGES.auth_organization} alt="Control Room" className="w-full h-auto object-cover opacity-85" />
             <div className="absolute inset-0 bg-brand/10 mix-blend-overlay"></div>
           </div>
 

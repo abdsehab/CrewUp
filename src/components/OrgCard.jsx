@@ -1,9 +1,13 @@
-export default function OrgCard({ name, desc, events, volunteers, icon }) {
+export default function OrgCard({ name, desc, events, volunteers, icon, image }) {
   return (
     <div className="bg-dark-surface border border-dark-border rounded-xl p-6 flex flex-col hover:-translate-y-1 transition-transform">
       <div className="flex items-start justify-between mb-4">
-        <div className="w-16 h-16 rounded-lg bg-dark-bg flex items-center justify-center">
-          {icon}
+        <div className="w-16 h-16 rounded-xl bg-dark-bg flex items-center justify-center overflow-hidden border border-dark-border/40">
+          {image ? (
+            <img src={image} alt={name} className="w-full h-full object-cover" />
+          ) : (
+            icon
+          )}
         </div>
         <span className="bg-dark-surface border border-dark-border/50 text-xs px-3 py-1 rounded-full text-light-muted">
           Verified

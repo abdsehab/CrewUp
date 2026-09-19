@@ -27,10 +27,19 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
+
+const allowedOrigins = [process.env.ALLOWED_ORIGIN, "http://localhost:5173", "http://localhost:5174"].filter(Boolean);
+
 app.use(
   cors({
     credentials: true,
-    origin: process.env.ALLOWED_ORIGIN,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like curl/server-to-server) or any localhost port
+      if (!origin || allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Blocked by CORS"));
+    },
   }),
 );
 app.use(log);
