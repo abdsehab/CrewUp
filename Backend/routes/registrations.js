@@ -2,6 +2,7 @@ import express from "express";
 import checkToken from "../middlewares/checkToken.js";
 import {
   getRegistrations,
+  getMyRegistrations,
   createRegistration,
   updateRegistration,
   deleteRegistration,
@@ -9,6 +10,7 @@ import {
 
 const router = express.Router();
 
+router.get("/my", checkToken, getMyRegistrations);
 router.get("/", checkToken, getRegistrations);
 router.post("/", checkToken, createRegistration);
 router.put("/:id", checkToken, updateRegistration);
