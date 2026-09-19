@@ -91,7 +91,24 @@ export default function EventDetails() {
           {/* CTA — hidden on mobile (sticky bar handles it) */}
           <div className="hidden md:flex flex-col items-end gap-1 shrink-0">
             <button 
-              onClick={() => setRegistered(true)}
+              onClick={async () => {
+                try {
+                  setRegistered(true);
+                  await fetchJSON('/api/registrations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event: event._id || event.id }),
+                    credentials: 'include'
+                  });
+                } catch (err) {
+                  if (err.message && err.message.includes('409')) {
+                    setRegistered(true);
+                  } else {
+                    alert("Failed to register: " + (err.message || "Unknown error"));
+                    setRegistered(false);
+                  }
+                }
+              }}
               disabled={registered}
               className={`font-semibold px-8 py-4 rounded-xl transition-colors flex items-center gap-2 ${
                 registered 
@@ -199,7 +216,24 @@ export default function EventDetails() {
       {/* ── Sticky mobile CTA ── */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full p-4 bg-dark-bg/90 backdrop-blur-lg z-50 border-t border-dark-border">
         <button 
-          onClick={() => setRegistered(true)}
+          onClick={async () => {
+            try {
+              setRegistered(true);
+              await fetchJSON('/api/registrations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: event._id || event.id }),
+                credentials: 'include'
+              });
+            } catch (err) {
+              if (err.message && err.message.includes('409')) {
+                setRegistered(true);
+              } else {
+                alert("Failed to register: " + (err.message || "Unknown error"));
+                setRegistered(false);
+              }
+            }
+          }}
           disabled={registered}
           className={`w-full font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 ${
             registered 

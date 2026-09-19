@@ -47,7 +47,7 @@ function ParticipantAvatars({ previews, count }) {
 }
 
 // ─── Event Card ───────────────────────────────────────────────
-export default function EventCard({ event }) {
+export default function EventCard({ event, isRegistered, onRegister }) {
   const { title, start_time, end_time, location, is_remote, status, icon, participant_count, participant_previews } = event;
 
   const badge = status === 'urgent' ? { label: 'Urgent', pulse: true }
@@ -55,7 +55,7 @@ export default function EventCard({ event }) {
               : null;
 
   return (
-    <div className="group flex flex-col rounded-2xl overflow-hidden border border-dark-border bg-dark-surface hover:border-brand/40 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-brand/10">
+    <div className="group flex flex-col rounded-2xl overflow-hidden border border-dark-border bg-dark-surface hover:border-brand/40 transition-all duration-300 shadow-lg hover:shadow-brand/10">
 
       {/* Icon Banner */}
       <div className="relative h-48 bg-dark-bg overflow-hidden flex-shrink-0">
@@ -92,11 +92,31 @@ export default function EventCard({ event }) {
           </div>
         </div>
 
-        <div className="mt-auto pt-4 border-t border-dark-border flex items-center justify-between gap-3">
+        <div className="mt-auto pt-4 border-t border-dark-border flex items-center justify-between gap-3 flex-wrap">
           <ParticipantAvatars previews={participant_previews} count={participant_count} />
-          <Link to={`/events/${event.id || event._id}`} state={{ event }} className="flex-shrink-0 border border-brand/30 text-brand px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-widest hover:bg-brand/10 transition-colors">
-            View Details
-          </Link>
+          <div className="flex gap-2 ml-auto">
+            {isRegistered ? (
+              <button 
+                disabled
+                className="flex-shrink-0 bg-dark-surface border border-brand/50 text-brand px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-widest cursor-default flex items-center gap-1.5"
+              >
+                ✓ Already Registered
+              </button>
+            ) : onRegister ? (
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  onRegister();
+                }}
+                className="flex-shrink-0 bg-brand text-dark-bg px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-widest hover:bg-white transition-colors"
+              >
+                Register
+              </button>
+            ) : null}
+            <Link to={`/events/${event.id || event._id}`} state={{ event }} className="flex-shrink-0 border border-brand/30 text-brand px-4 py-1.5 rounded-lg text-xs font-mono uppercase tracking-widest hover:bg-brand/10 transition-colors">
+              View Details
+            </Link>
+          </div>
         </div>
       </div>
     </div>
