@@ -45,6 +45,10 @@ const eventSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Organization",
   },
+  created_by: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const Event = model("Event", eventSchema);

@@ -31,7 +31,7 @@ function OrganizerDashboard() {
       try {
         const [regsResult, eventsResult] = await Promise.allSettled([
           fetchJSON("/api/registrations", { credentials: "include" }),
-          fetchJSON("/api/events", { credentials: "include" }),
+          fetchJSON("/api/events?mine=true", { credentials: "include" }),
         ]);
 
         if (!cancelled) {
