@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import fetchJSON from "../../utils/api";
+import { useAuth } from "../../hooks/useAuth";
 import OrganizerSidebar from "../../components/organizer_portal/OrganizerSidebar";
 import { CLOUDINARY_IMAGES } from "../../constants/cloudinaryImages";
 import {
@@ -45,9 +45,8 @@ const DEFAULT_REQUIREMENTS = [
 
 function OrganizerCreateEvent() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [organizations, setOrganizations] = useState([]);
-  const [loadingOrgs, setLoadingOrgs] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -55,7 +54,6 @@ function OrganizerCreateEvent() {
     title: "",
     category: "Environmental",
     icon: "leaf",
-    organizer: "",
     image_url: CLOUDINARY_IMAGES.event_urban_forest_mapping,
     start_time: "",
     end_time: "",
@@ -68,30 +66,6 @@ function OrganizerCreateEvent() {
   });
 
   const [requirements, setRequirements] = useState(DEFAULT_REQUIREMENTS);
-
-  // Fetch available organizations for the organizer dropdown
-  useEffect(() => {
-    let cancelled = false;
-    fetchJSON("/api/organizations")
-      .then((orgs) => {
-        if (!cancelled) {
-          setOrganizations(orgs);
-          if (orgs.length > 0) {
-            setFormData((prev) => ({
-              ...prev,
-              organizer: prev.organizer || orgs[0]._id,
-            }));
-          }
-          setLoadingOrgs(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setLoadingOrgs(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -119,7 +93,7 @@ function OrganizerCreateEvent() {
         title: formData.title.trim(),
         category: formData.category,
         icon: formData.icon,
-        organizer: formData.organizer || undefined,
+        organizer: user?.displayName || undefined,
         image_url: formData.image_url.trim() || undefined,
         start_time: formData.start_time
           ? new Date(formData.start_time).toISOString()
@@ -280,28 +254,12 @@ function OrganizerCreateEvent() {
                   <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-[#c1cab3]">
                     Hosting Organization
                   </label>
-                  <select
-                    name="organizer"
-                    value={formData.organizer}
-                    onChange={handleChange}
-                    disabled={loadingOrgs}
-                    className="w-full rounded-lg border border-[#324539] bg-[#14251d] px-4 py-3.5 text-sm text-[#e0e3e1] outline-none transition focus:border-[#afff66] disabled:opacity-50"
-                  >
-                    {organizations.map((org) => (
-                      <option
-                        key={org._id}
-                        value={org._id}
-                        className="bg-[#1c201f]"
-                      >
-                        {org.name}
-                      </option>
-                    ))}
-                    {organizations.length === 0 && (
-                      <option value="" className="bg-[#1c201f]">
-                        Default Organization
-                      </option>
-                    )}
-                  </select>
+                  <input
+                    type="text"
+                    readOnly
+                    value={user?.displayName || "My Organization"}
+                    className="w-full cursor-not-allowed rounded-lg border border-[#324539] bg-[#14251d]/60 px-4 py-3.5 text-sm font-medium text-[#afff66] outline-none select-none"
+                  />
                 </div>
 
                 <div>

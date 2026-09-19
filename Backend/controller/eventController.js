@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 import Event from "../model/event.js";
 import Organization from "../model/organization.js";
 import User from "../model/user.js";
@@ -74,6 +75,49 @@ const buildFilter = (query) => {
 export const getEvents = async (req, res) => {
   try {
     const filter = buildFilter(req.query);
+
+    if (req.query.mine === "true") {
+      const token =
+        req.cookies?.token ||
+        (req.headers.authorization && req.headers.authorization.split(" ")[1]);
+
+      if (!token) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+
+      const dbUser = await User.findById(decoded.id);
+      if (!dbUser) {
+        return res.status(401).json({ error: "User not found" });
+      }
+
+      const userClauses = [{ created_by: dbUser._id }];
+      if (dbUser.displayName) {
+        const orgs = await Organization.find({
+          name: new RegExp(`^${dbUser.displayName.trim()}$`, "i"),
+        });
+        orgs.forEach((org) => {
+          userClauses.push({ organizer: org._id });
+        });
+      }
+
+      const organizerFilter = { $or: userClauses };
+      if (filter.$and) {
+        filter.$and.push(organizerFilter);
+      } else if (filter.$or) {
+        filter.$and = [organizerFilter, { $or: filter.$or }];
+        delete filter.$or;
+      } else {
+        Object.assign(filter, organizerFilter);
+      }
+    }
+
     const events = await Event.find(filter)
       .populate("organizer")
       .select("-__v")
@@ -102,6 +146,14 @@ export const createEvent = async (req, res) => {
   try {
     const eventData = { ...req.body };
 
+    let dbUser = null;
+    if (req.user?.id) {
+      dbUser = await User.findById(req.user.id);
+      if (dbUser) {
+        eventData.created_by = dbUser._id;
+      }
+    }
+
     if (!eventData.id) {
       const lastEvent = await Event.findOne().sort({ id: -1 });
       eventData.id = lastEvent && lastEvent.id ? lastEvent.id + 1 : 1;
@@ -117,12 +169,31 @@ export const createEvent = async (req, res) => {
       }
     }
 
-    if (eventData.organizer) {
+    // Resolve organizer: prioritize authenticated user's organization
+    let org = null;
+    if (dbUser?.displayName) {
+      org = await Organization.findOne({
+        name: new RegExp(`^${dbUser.displayName.trim()}$`, "i"),
+      });
+      if (!org) {
+        org = await Organization.create({
+          name: dbUser.displayName.trim(),
+          desc: "Eco-tech community organization",
+          bio: "Dedicated to driving positive environmental impact.",
+          image:
+            "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=100&q=80",
+        });
+      }
+    }
+
+    if (org) {
+      eventData.organizer = org._id;
+    } else if (eventData.organizer) {
       const isValid = mongoose.Types.ObjectId.isValid(eventData.organizer);
       if (!isValid) {
-        let org = await Organization.findOne({ name: eventData.organizer });
-        if (!org) {
-          org = await Organization.create({
+        let foundOrg = await Organization.findOne({ name: eventData.organizer });
+        if (!foundOrg) {
+          foundOrg = await Organization.create({
             name: eventData.organizer,
             desc: "Community organization on CrewUp",
             bio: "Organizing environmental and tech stewardship events.",
@@ -130,30 +201,12 @@ export const createEvent = async (req, res) => {
               "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=100&q=80",
           });
         }
-        eventData.organizer = org._id;
+        eventData.organizer = foundOrg._id;
       }
     } else {
-      let org = null;
-      if (req.user?.id) {
-        const user = await User.findById(req.user.id);
-        if (user?.displayName) {
-          org = await Organization.findOne({ name: user.displayName });
-          if (!org) {
-            org = await Organization.create({
-              name: user.displayName,
-              desc: "Eco-tech community organization",
-              bio: "Dedicated to driving positive environmental impact.",
-              image:
-                "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=100&q=80",
-            });
-          }
-        }
-      }
-      if (!org) {
-        org = await Organization.findOne();
-      }
-      if (org) {
-        eventData.organizer = org._id;
+      const defaultOrg = await Organization.findOne();
+      if (defaultOrg) {
+        eventData.organizer = defaultOrg._id;
       }
     }
 
@@ -209,17 +262,46 @@ export const updateEvent = async (req, res) => {
 export const deleteEvent = async (req, res) => {
   try {
     const rawId = req.params.id;
-    let deleted;
-    if (!isNaN(Number(rawId))) {
-      deleted = await Event.findOneAndDelete({ id: Number(rawId) });
-    }
-    if (!deleted && mongoose.Types.ObjectId.isValid(rawId)) {
-      deleted = await Event.findByIdAndDelete(rawId);
-    }
-    if (!deleted) {
+    let eventQuery = !isNaN(Number(rawId))
+      ? { id: Number(rawId) }
+      : mongoose.Types.ObjectId.isValid(rawId)
+        ? { _id: rawId }
+        : null;
+
+    if (!eventQuery) {
       return res.status(404).json({ error: "Event not found" });
     }
-    if (deleted.organizer) {
+
+    const event = await Event.findOne(eventQuery);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    // Ownership check if authenticated user is not admin
+    if (req.user?.id) {
+      const dbUser = await User.findById(req.user.id);
+      if (dbUser && dbUser.role !== "admin") {
+        const org = await Organization.findOne({
+          name: new RegExp(`^${dbUser.displayName.trim()}$`, "i"),
+        });
+        const isCreator =
+          event.created_by &&
+          event.created_by.toString() === dbUser._id.toString();
+        const isOrgOwner =
+          org &&
+          event.organizer &&
+          event.organizer.toString() === org._id.toString();
+
+        if (!isCreator && !isOrgOwner) {
+          return res
+            .status(403)
+            .json({ error: "Unauthorized to delete this event" });
+        }
+      }
+    }
+
+    const deleted = await Event.findOneAndDelete(eventQuery);
+    if (deleted?.organizer) {
       await Organization.findByIdAndUpdate(deleted.organizer, {
         $inc: { events: -1 },
       });
