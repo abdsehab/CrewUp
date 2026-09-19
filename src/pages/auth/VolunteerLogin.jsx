@@ -5,7 +5,7 @@ import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { useAuth } from '../../hooks/useAuth';
 import { API_BASE } from '../../utils/api';
-import bgImg from '../../assets/auth_volunteer.jpg';
+import { CLOUDINARY_IMAGES } from '../../constants/cloudinaryImages';
 
 const VolunteerLogin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -54,7 +54,7 @@ const VolunteerLogin = () => {
     <div className="w-full flex-grow flex">
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col p-16">
-        <img src={bgImg} alt="Eco-Tech Facility" className="absolute inset-0 w-full h-full object-cover grayscale opacity-70 mix-blend-overlay" />
+        <img src={CLOUDINARY_IMAGES.auth_volunteer} alt="Eco-Tech Facility" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" />
         <div className="absolute inset-0 bg-dark-bg/30"></div>
         
         <div className="relative z-10 flex items-center space-x-2">

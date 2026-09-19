@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, ArrowRight } from 'lucide-react';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
-import bgImg from '../../assets/auth_volunteer.jpg';
+import { CLOUDINARY_IMAGES } from '../../constants/cloudinaryImages';
 import { API_BASE } from '../../utils/api';
 
 const VolunteerRegister = () => {
@@ -56,7 +56,7 @@ const VolunteerRegister = () => {
     <div className="w-full flex-grow flex">
       {/* Left side - Image & Branding */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-end p-16">
-        <img src={bgImg} alt="Volunteers" className="absolute inset-0 w-full h-full object-cover grayscale opacity-50 mix-blend-overlay" />
+        <img src={CLOUDINARY_IMAGES.auth_volunteer} alt="Volunteers" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" />
         <div className="absolute inset-0 bg-dark-bg/40"></div>
         
         <div className="relative z-10 max-w-md">

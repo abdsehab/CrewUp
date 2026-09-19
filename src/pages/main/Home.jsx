@@ -1,6 +1,6 @@
 import { ArrowRight, CheckCircle2, Search, Activity, Award, Calendar, MapPin, Plus } from 'lucide-react';
 import Button from '../../components/common/Button';
-import heroImg from '../../assets/hero.jpg';
+import { CLOUDINARY_IMAGES } from '../../constants/cloudinaryImages';
 
 const Home = () => {
   return (
@@ -34,7 +34,7 @@ const Home = () => {
 
         {/* Right Column - Hero Image */}
         <div className="relative w-full h-[500px] lg:h-[600px] rounded-3xl overflow-hidden border border-dark-border shadow-2xl">
-          <img src={heroImg} alt="Volunteers in action" className="w-full h-full object-cover" />
+          <img src={CLOUDINARY_IMAGES.hero_homepage} alt="Volunteers in action" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-dark-bg/80 via-transparent to-transparent"></div>
           
           {/* Floating Impact Card */}
@@ -103,7 +103,7 @@ const Home = () => {
           {/* Main Event Card */}
           <div className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl h-[450px] group cursor-pointer">
             <div className="absolute inset-0 bg-gradient-to-tr from-brand/20 to-dark-bg mix-blend-overlay z-0"></div>
-            <img src={heroImg} className="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:scale-105 transition-transform duration-700" alt="Hydroponics" />
+            <img src={CLOUDINARY_IMAGES.event_metro_hydroponics} className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" alt="Metro Hydroponics Setup" />
             <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-dark-bg/40 to-transparent"></div>
             
             <div className="absolute top-6 right-6 flex space-x-4 text-xs font-mono uppercase tracking-widest text-white">
@@ -128,10 +128,11 @@ const Home = () => {
           <div className="grid grid-rows-2 gap-8 h-[450px]">
             {/* Secondary Event Card */}
             <div className="relative rounded-3xl overflow-hidden border border-dark-border shadow-xl group cursor-pointer p-8 flex flex-col justify-end bg-gradient-to-br from-dark-surface to-dark-bg">
-              <div className="absolute inset-0 bg-gradient-to-r from-brand/5 to-transparent"></div>
+              <img src={CLOUDINARY_IMAGES.event_river_basin_testing} className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-700" alt="River Basin Testing" />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-dark-bg/60 to-transparent"></div>
               
               <div className="relative z-10">
-                <span className="inline-block px-3 py-1 rounded-full bg-dark-bg border border-dark-border text-xs font-mono text-white mb-3">Water Quality</span>
+                <span className="inline-block px-3 py-1 rounded-full bg-dark-bg/80 border border-dark-border text-xs font-mono text-white mb-3">Water Quality</span>
                 <h3 className="text-2xl font-bold text-white mb-2">River Basin Testing</h3>
                 <p className="text-sm text-light-muted mb-6 max-w-sm">Assist environmental scientists in gathering crucial data for the annual watershed report.</p>
                 <div className="text-brand text-xs font-mono uppercase tracking-widest flex items-center group-hover:underline">

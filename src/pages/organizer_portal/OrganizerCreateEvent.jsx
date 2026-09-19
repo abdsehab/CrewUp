@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import OrganizerSidebar from "../../components/organizer_portal/OrganizerSidebar";
+import { CLOUDINARY_IMAGES } from "../../constants/cloudinaryImages";
 import {
   Menu,
   ArrowLeft,
@@ -19,34 +20,26 @@ const CATEGORIES = [
   "Urban Renewal",
 ];
 
-const ICONS = [
-  { value: "leaf", label: "Leaf (Environmental)" },
-  { value: "tree", label: "Tree (Restoration / Forestry)" },
-  { value: "network", label: "Network (Infrastructure / Mesh)" },
-  { value: "wifi", label: "Wifi (Smart Grid / Digital)" },
-  { value: "terminal", label: "Terminal (Hackathon / Coding)" },
-];
-
 const DEFAULT_REQUIREMENTS = [
   {
     icon: "walk",
     title: "Physicality",
-    desc: "Light to moderate walking or standing.",
+    desc: "Light to moderate walking.",
   },
   {
     icon: "shoe",
     title: "Apparel",
-    desc: "Comfortable, weather-appropriate clothing.",
+    desc: "Closed-toe shoes required.",
   },
   {
     icon: "food",
     title: "Provisions",
-    desc: "Water and light refreshments provided.",
+    desc: "Water and light snacks provided.",
   },
   {
     icon: "award",
     title: "Skills Gained",
-    desc: "Community stewardship and practical skills.",
+    desc: "Practical field stewardship experience.",
   },
 ];
 
@@ -61,8 +54,7 @@ function OrganizerCreateEvent() {
     title: "",
     category: "Environmental",
     icon: "leaf",
-    image_url:
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=80",
+    image_url: CLOUDINARY_IMAGES.event_urban_forest_mapping,
     start_time: "",
     end_time: "",
     is_remote: false,
