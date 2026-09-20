@@ -1,8 +1,3 @@
-/**
- * Cloudinary Hosted Image Assets for CrewUp
- * Flat dictionary of all 16 image assets
- */
-
 export const CLOUDINARY_IMAGES = {
   // Hero
   hero_homepage: "https://res.cloudinary.com/dsemiizxm/image/upload/v1789831587/hero_homepage_volunteers_b2msw3.webp",
@@ -28,5 +23,3 @@ export const CLOUDINARY_IMAGES = {
   org_solar_action_network: "https://res.cloudinary.com/dsemiizxm/image/upload/v1789831589/org_solar_action_network_stx2ea.webp",
   org_urban_roots_collective: "https://res.cloudinary.com/dsemiizxm/image/upload/v1789831590/org_urban_roots_collective_pqfsgl.webp",
 };
-
-export default CLOUDINARY_IMAGES;
