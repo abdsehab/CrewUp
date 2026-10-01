@@ -1,4 +1,5 @@
 import express from "express";
+import checkToken from "../middlewares/checkToken.js";
 import {
   getOrganizations,
   getOrganizationById,
