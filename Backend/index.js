@@ -56,6 +56,9 @@ app.use("/api/events", eventRoutes);
 
 app.use("/api/registrations", registrationRoutes);
 
+import adminRoutes from "./routes/admin.js";
+app.use("/api/admin", adminRoutes);
+
 app.use((req, res) => {
   res.status(404).json({ error: `Route not found: ${req.originalUrl}` });
 });

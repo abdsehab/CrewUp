@@ -35,7 +35,7 @@ const Navbar = () => {
           <Leaf className="h-6 w-6 text-brand transition-transform group-hover:scale-110" />
           <span className="text-xl font-semibold tracking-tight text-brand">CrewUp</span>
         </Link>
-        
+
         <div className="hidden md:flex items-center space-x-8 text-sm font-medium">
           <Link to="/events" className={`transition-colors hover:text-brand ${location.pathname === '/events' ? 'text-brand' : 'text-light'}`}>
             Explore Events
@@ -52,10 +52,12 @@ const Navbar = () => {
           {loading ? null : user ? (
             <div className="relative" ref={menuRef}>
               <button onClick={() => setMenuOpen((open) => !open)} className="flex items-center space-x-2 group">
-                <div className="w-9 h-9 rounded-full bg-dark-bg border border-brand overflow-hidden flex items-center justify-center select-none">
-                  {/* profileImage = "https://i.pravatar.cc/150?img=12" (hardcoded image) 
-                      Later: profileImage = user.profileImage */}
-                  <img src={user?.profileImage || "https://i.pravatar.cc/150?img=12"} alt="Profile" className="w-full h-full object-cover" />
+                <div className="w-9 h-9 rounded-full bg-dark-bg border border-brand overflow-hidden flex items-center justify-center select-none text-brand text-xs font-bold uppercase">
+                  {user?.image ? (
+                    <img src={user.image} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{displayName?.substring(0, 2) || 'V'}</span>
+                  )}
                 </div>
                 <span className="hidden md:inline text-sm font-medium text-light group-hover:text-brand transition-colors max-w-[120px] truncate">
                   {displayName}
@@ -65,8 +67,8 @@ const Navbar = () => {
               {menuOpen && (
                 <div className="absolute right-0 top-full mt-3 w-44 bg-dark-surface border border-dark-border rounded-xl py-2 shadow-xl">
                   {user?.role === 'volunteer' && (
-                    <Link 
-                      to="/volunteer/dashboard" 
+                    <Link
+                      to="/volunteer/dashboard"
                       onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-2 px-4 py-2 text-sm text-light-muted hover:text-brand transition-colors"
                     >
@@ -74,8 +76,8 @@ const Navbar = () => {
                     </Link>
                   )}
                   {user?.role === 'organization' && (
-                    <Link 
-                      to="/organizer/dashboard" 
+                    <Link
+                      to="/organizer/dashboard"
                       onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-2 px-4 py-2 text-sm text-light-muted hover:text-brand transition-colors"
                     >
@@ -94,8 +96,8 @@ const Navbar = () => {
               <Link to="/auth/login" className="hidden md:inline-block text-sm font-medium text-light hover:text-brand transition-colors">
                 Login
               </Link>
-              <Link 
-                to="/auth/register" 
+              <Link
+                to="/auth/register"
                 className="bg-brand text-dark-bg hover:bg-brand-hover px-5 py-2 rounded-full text-sm font-semibold transition-colors"
               >
                 Register

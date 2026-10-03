@@ -12,11 +12,12 @@ const VolunteerRegister = () => {
     email: '',
     password: ''
   });
+  const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate(); 
-  
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -25,8 +26,29 @@ const VolunteerRegister = () => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    
+
     try {
+      let imageUrl = undefined;
+
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append("file", imageFile);
+        fd.append("upload_preset", "ml_default");
+
+        try {
+          const uploadRes = await fetch("https://api.cloudinary.com/v1_1/dsemiizxm/image/upload", {
+            method: "POST",
+            body: fd
+          });
+          const uploadData = await uploadRes.json();
+          if (uploadData.secure_url) {
+            imageUrl = uploadData.secure_url;
+          }
+        } catch (uploadErr) {
+          console.error("Cloudinary upload failed:", uploadErr);
+        }
+      }
+
       const response = await fetch(`${API_BASE}/api/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,7 +56,8 @@ const VolunteerRegister = () => {
           username: formData.email,
           displayName: formData.name.trim(),
           password: formData.password,
-          role: 'volunteer'
+          role: 'volunteer',
+          image: imageUrl
         })
       });
 
@@ -58,7 +81,7 @@ const VolunteerRegister = () => {
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-end p-16">
         <img src={CLOUDINARY_IMAGES.auth_volunteer} alt="Volunteers" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" />
         <div className="absolute inset-0 bg-dark-bg/40"></div>
-        
+
         <div className="relative z-10 max-w-md">
           <h1 className="text-5xl font-bold text-brand mb-6 leading-tight">Mobilize for Impact.</h1>
           <p className="text-light-muted text-lg leading-relaxed mb-8">
@@ -78,7 +101,7 @@ const VolunteerRegister = () => {
         <div className="w-full max-w-md bg-dark-surface border border-dark-border rounded-2xl p-8 shadow-2xl relative overflow-hidden">
           {/* Subtle green glow behind the card content */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-brand/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-          
+
           <div className="relative z-10">
             <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
             <p className="text-light-muted text-sm mb-6">Enter your details to configure your stewardship profile.</p>
@@ -89,9 +112,19 @@ const VolunteerRegister = () => {
               <div className="grid grid-cols-1 gap-4">
                 <Input label="Name" id="name" placeholder="Jane Doe" value={formData.name} onChange={handleChange} required />
               </div>
-              
+
               <Input label="Email Address" id="email" type="email" icon={Mail} placeholder="jane.doe@example.com" value={formData.email} onChange={handleChange} required />
               <Input label="Password" id="password" type="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required />
+
+              <div className="flex flex-col gap-1 mt-1">
+                <label className="text-xs font-semibold uppercase tracking-widest text-[#c1cab3]">Profile Picture (Optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setImageFile(e.target.files[0])}
+                  className="w-full text-sm text-[#e0e3e1] file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:bg-[#324539] file:text-[#afff66] file:font-semibold hover:file:bg-[#24342A] file:cursor-pointer file:transition outline-none cursor-pointer"
+                />
+              </div>
 
               <div className="pt-2">
                 <Button type="submit" variant="primary" className="w-full group rounded-xl" disabled={loading}>

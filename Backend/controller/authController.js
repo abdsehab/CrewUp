@@ -6,6 +6,28 @@ const lifetime = "3600000";
 
 export const login = async (req, res) => {
   const { username, password } = req.body;
+
+  if (username === "admin@crewup.org") {
+    if (password === process.env.ADMIN_MASTER_PASSWORD) {
+      const token = jwt.sign(
+        { username: username, role: "admin" },
+        process.env.JWT_SECRET,
+        { expiresIn: lifetime }
+      );
+      const isProduction = process.env.NODE_ENV === "production";
+      res.cookie("token", token, {
+        maxAge: lifetime,
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+        path: "/",
+      });
+      return res.status(200).json({ username, role: "admin" });
+    } else {
+      return res.status(400).json({ error: "Wrong password" });
+    }
+  }
+
   const user = await User.findOne({ username: username }).select(["-__v"]);
 
   if (!user) {
@@ -21,6 +43,7 @@ export const login = async (req, res) => {
     {
       id: user.id,
       username: user.username,
+      role: user.role,
     },
     process.env.JWT_SECRET,
     { expiresIn: lifetime },
@@ -35,7 +58,7 @@ export const login = async (req, res) => {
     sameSite: isProduction ? "none" : "lax",
     path: "/",
   });
-  
+
   const { password: _, ...userWithoutPassword } = user.toObject();
   return res.status(200).json(userWithoutPassword);
 };

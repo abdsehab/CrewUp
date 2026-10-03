@@ -11,9 +11,10 @@ const userSchema = new Schema({
     type: Schema.Types.String,
     required: true,
   },
+  image: Schema.Types.String,
   role: {
     type: Schema.Types.String,
-    enum: ["volunteer", "organization"],
+    enum: ["volunteer", "organization", "admin"],
     default: "volunteer"
   }
 });

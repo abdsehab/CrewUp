@@ -1,5 +1,6 @@
 import { hashPassword } from "../utils/helpers.js";
 import User from "../model/user.js";
+import Organization from "../model/organization.js";
 import jwt from "jsonwebtoken";
 
 export const getAllUsers = async (req, res) => {
@@ -16,7 +17,25 @@ export const getProfile = async (req, res) => {
     const { token } = req.cookies;
     const user = jwt.verify(token, process.env.JWT_SECRET);
 
+    if (user.role === "admin" && !user.id) {
+      return res.status(200).json({
+        username: user.username,
+        role: "admin",
+        displayName: "Platform Admin"
+      });
+    }
+
     const userInfo = await User.findById(user.id).select(["-__v"]);
+
+    // For org users, also fetch their approval status from organizations collection
+    if (userInfo && userInfo.role === "organization") {
+      const org = await Organization.findOne({ userId: userInfo._id }).select("status name image email");
+      const result = userInfo.toObject();
+      result.orgStatus = org?.status || "Pending";
+      result.orgId = org?._id || null;
+      return res.status(200).json(result);
+    }
+
     return res.status(200).json(userInfo);
   } catch (err) {
     return res.status(400).json(err);
@@ -24,7 +43,7 @@ export const getProfile = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  const { username, displayName, password, role } = req.body;
+  const { username, displayName, password, role, image } = req.body;
 
   const hashedPassword = await hashPassword(password);
 
@@ -33,6 +52,7 @@ export const createUser = async (req, res) => {
     displayName,
     password: hashedPassword,
     role,
+    image,
   });
 
   try {
@@ -42,6 +62,19 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ error: "Username already in use" });
     }
     await newUser.save();
+
+    // If registering as an organization, create a Pending org document
+    if (role === "organization") {
+      await Organization.create({
+        name: displayName,
+        email: username,
+        image: image || null,
+        status: "Pending",
+        verified: false,
+        userId: newUser._id,
+      });
+    }
+
     return res.status(201).json({ message: "New user added successfully" });
   } catch (err) {
     return res.status(400).json(err);

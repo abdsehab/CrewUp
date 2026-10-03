@@ -12,6 +12,7 @@ const OrgRegister = () => {
     email: '',
     password: ''
   });
+  const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +26,27 @@ const OrgRegister = () => {
     setLoading(true);
 
     try {
+      let imageUrl = undefined;
+
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append("file", imageFile);
+        fd.append("upload_preset", "ml_default");
+
+        try {
+          const uploadRes = await fetch("https://api.cloudinary.com/v1_1/dsemiizxm/image/upload", {
+            method: "POST",
+            body: fd
+          });
+          const uploadData = await uploadRes.json();
+          if (uploadData.secure_url) {
+            imageUrl = uploadData.secure_url;
+          }
+        } catch (uploadErr) {
+          console.error("Cloudinary upload failed:", uploadErr);
+        }
+      }
+
       const response = await fetch(`${API_BASE}/api/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -32,7 +54,8 @@ const OrgRegister = () => {
           username: formData.email,
           displayName: formData.orgName,
           password: formData.password,
-          role: 'organization'
+          role: 'organization',
+          image: imageUrl
         })
       });
 
@@ -66,12 +89,22 @@ const OrgRegister = () => {
         <div className="bg-dark-surface border border-dark-border rounded-xl p-8 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded text-red-200 text-sm">{error}</div>}
-            
+
             <Input label="Organization Name *" id="orgName" placeholder="e.g., Eco-Tech Stewardship" value={formData.orgName} onChange={handleChange} required />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input label="Primary Contact Email *" id="email" type="email" icon={Mail} placeholder="contact@organization.org" value={formData.email} onChange={handleChange} required />
               <Input label="Password *" id="password" type="password" placeholder="••••••••" value={formData.password} onChange={handleChange} required />
+            </div>
+
+            <div className="flex flex-col gap-1 mt-1">
+              <label className="text-sm font-medium text-light-muted mb-1">Organization Logo (Optional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImageFile(e.target.files[0])}
+                className="w-full text-sm text-[#e0e3e1] file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:bg-[#324539] file:text-[#afff66] file:font-semibold hover:file:bg-[#24342A] file:cursor-pointer file:transition outline-none cursor-pointer"
+              />
             </div>
 
             <div className="pt-8 border-t border-dark-border flex items-center justify-between">

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 function OrganizerSidebar({ isOpen, setIsOpen }) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -40,9 +40,19 @@ function OrganizerSidebar({ isOpen, setIsOpen }) {
           </button>
         </div>
 
-        {/* Logo */}
+        {/* Logo / Org Avatar */}
         <div className="mb-12 flex items-center gap-3">
-          <div className="h-11 w-11 rounded-full border border-[#424938] bg-[#24342A]" />
+          {user?.image ? (
+            <img
+              src={user.image}
+              alt={user.displayName}
+              className="h-11 w-11 rounded-full border border-[#424938] object-cover shrink-0"
+            />
+          ) : (
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#424938] bg-[#24342A] text-sm font-semibold text-[#afff66]">
+              {user?.displayName?.substring(0, 2).toUpperCase() || "OP"}
+            </div>
+          )}
 
           <div>
             <h2 className="text-lg font-semibold tracking-wide text-[#afff66]">
@@ -62,10 +72,9 @@ function OrganizerSidebar({ isOpen, setIsOpen }) {
             to="/organizer/dashboard"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
-              `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
-                isActive
-                  ? "bg-[#424f47] text-[#afff66]"
-                  : "text-[#c1cab3] hover:bg-[#24342A]"
+              `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${isActive
+                ? "bg-[#424f47] text-[#afff66]"
+                : "text-[#c1cab3] hover:bg-[#24342A]"
               }`
             }
           >
@@ -78,10 +87,9 @@ function OrganizerSidebar({ isOpen, setIsOpen }) {
             to="/organizer/events"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
-              `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
-                isActive
-                  ? "bg-[#424f47] text-[#afff66]"
-                  : "text-[#c1cab3] hover:bg-[#24342A]"
+              `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${isActive
+                ? "bg-[#424f47] text-[#afff66]"
+                : "text-[#c1cab3] hover:bg-[#24342A]"
               }`
             }
           >
@@ -94,10 +102,9 @@ function OrganizerSidebar({ isOpen, setIsOpen }) {
             to="/organizer/volunteers"
             onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
-              `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
-                isActive
-                  ? "bg-[#424f47] text-[#afff66]"
-                  : "text-[#c1cab3] hover:bg-[#24342A]"
+              `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${isActive
+                ? "bg-[#424f47] text-[#afff66]"
+                : "text-[#c1cab3] hover:bg-[#24342A]"
               }`
             }
           >
@@ -124,10 +131,9 @@ function OrganizerSidebar({ isOpen, setIsOpen }) {
           to="/organizer/create-event"
           onClick={() => setIsOpen(false)}
           className={({ isActive }) =>
-            `flex w-full items-center justify-center gap-3 rounded-lg py-4 font-medium tracking-wide transition ${
-              isActive
-                ? "bg-[#b7ff72] text-[#101413] shadow-lg"
-                : "bg-[#afff66] text-[#101413] hover:bg-[#b7ff72]"
+            `flex w-full items-center justify-center gap-3 rounded-lg py-4 font-medium tracking-wide transition ${isActive
+              ? "bg-[#b7ff72] text-[#101413] shadow-lg"
+              : "bg-[#afff66] text-[#101413] hover:bg-[#b7ff72]"
             }`
           }
         >
