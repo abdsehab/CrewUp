@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Globe, Users, Award, Dumbbell, Shirt, Coffee, BadgeCheck, CheckCircle2 } from 'lucide-react';
 import fetchJSON from '../../utils/api';
+import { useAuth } from '../../hooks/useAuth';
 
 const REQ_ICONS = { walk: Dumbbell, shoe: Shirt, food: Coffee, award: Award };
 
@@ -16,36 +17,51 @@ function formatTime(start, end) {
 export default function EventDetails() {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
   const [event, setEvent] = useState(location.state?.event || null);
   const [loading, setLoading] = useState(!location.state?.event);
   const [error, setError] = useState(null);
   const [registered, setRegistered] = useState(false);
 
   useEffect(() => {
-    if (location.state?.event) {
-      return;
-    }
-
     let cancelled = false;
 
-    fetchJSON(`/api/events/${id}`)
-      .then((data) => {
-        if (!cancelled) {
-          setEvent(data);
-          setLoading(false);
+    const fetchDetails = async () => {
+      try {
+        if (!event) {
+          const data = await fetchJSON(`/api/events/${id}`);
+          if (!cancelled) {
+            setEvent(data);
+          }
         }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          setError(err.message);
-          setLoading(false);
+        
+        // If user is logged in, check if they are already registered
+        if (user && !cancelled) {
+          try {
+            const myRegs = await fetchJSON('/api/registrations/my', { credentials: 'include' });
+            const isReg = myRegs.some(r => (r.event._id || r.event) === id);
+            if (isReg && !cancelled) {
+              setRegistered(true);
+            }
+          } catch (err) {
+            // Ignore error checking registrations
+          }
         }
-      });
+      } catch (err) {
+        if (!cancelled) setError(err.message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    
+    fetchDetails();
 
     return () => {
       cancelled = true;
     };
-  }, [id, location.state?.event]);
+  }, [id, event, user]);
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -92,6 +108,10 @@ export default function EventDetails() {
           <div className="hidden md:flex flex-col items-end gap-1 shrink-0">
             <button 
               onClick={async () => {
+                if (!user) {
+                  navigate('/auth/volunteer');
+                  return;
+                }
                 try {
                   setRegistered(true);
                   await fetchJSON('/api/registrations', {
@@ -217,6 +237,10 @@ export default function EventDetails() {
       <div className="lg:hidden fixed bottom-0 left-0 w-full p-4 bg-dark-bg/90 backdrop-blur-lg z-50 border-t border-dark-border">
         <button 
           onClick={async () => {
+            if (!user) {
+              navigate('/auth/volunteer');
+              return;
+            }
             try {
               setRegistered(true);
               await fetchJSON('/api/registrations', {
