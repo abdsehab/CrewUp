@@ -13,6 +13,7 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.33.0",
     "react": "^19.2.8",
+    "react-carbon-footprint": "^1.0.0",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.2"
   },

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/common/Layout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import GuestRoute from './components/common/GuestRoute';
+import CarbonFootprintDisplay from './components/common/CarbonFootprintDisplay';
 
 // Main pages
 import Home from './pages/main/Home';
@@ -94,6 +95,7 @@ function App() {
         </Route>
 
       </Routes>
+      <CarbonFootprintDisplay />
     </Router>
   );
 }

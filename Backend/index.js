@@ -5,6 +5,7 @@ import organizationRoutes from "./routes/organizations.js";
 import eventRoutes from "./routes/events.js";
 import registrationRoutes from "./routes/registrations.js";
 import log from "./middlewares/logger.js";
+import carbonFootprintMiddleware from "./middlewares/carbonFootprint.js";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import "dotenv/config";
@@ -43,6 +44,7 @@ app.use(
   }),
 );
 app.use(log);
+app.use(carbonFootprintMiddleware);
 
 app.get("/api", (req, res) => res.json({ message: "API is working" }));
 
