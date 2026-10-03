@@ -11,9 +11,9 @@ const OrgLogin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -39,12 +39,21 @@ const OrgLogin = () => {
       }
 
       if (data.role && data.role !== 'organization') {
-         throw new Error('Please login through the Volunteer portal.');
+        throw new Error('Please login through the Volunteer portal.');
       }
 
-      login(data);
-      const from = location.state?.from?.pathname || '/organizer/dashboard';
-      navigate(from, { replace: true });
+      // Fetch full profile to get orgStatus
+      const profileRes = await fetch(`${API_BASE}/api/users/profile`, { credentials: 'include' });
+      const profile = profileRes.ok ? await profileRes.json() : data;
+
+      login(profile);
+
+      if (profile.orgStatus !== 'Verified') {
+        navigate('/auth/org-pending', { replace: true });
+      } else {
+        const from = location.state?.from?.pathname || '/organizer/dashboard';
+        navigate(from, { replace: true });
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -58,7 +67,7 @@ const OrgLogin = () => {
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-center p-16 border-r border-dark-border">
         {/* Abstract pattern background */}
         <div className="absolute inset-0 bg-[radial-gradient(#2A2E2C_1px,transparent_1px)] [background-size:24px_24px] opacity-20"></div>
-        
+
         <div className="relative z-10 max-w-lg">
           <h1 className="text-5xl font-bold text-brand mb-6 leading-tight">CrewUp Portal</h1>
           <p className="text-light-muted text-lg leading-relaxed mb-16">
@@ -86,7 +95,7 @@ const OrgLogin = () => {
         <div className="w-full max-w-md bg-dark-surface border border-dark-border rounded-2xl p-8 shadow-2xl relative overflow-hidden">
           {/* Subtle green glow behind the card content */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-brand/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-          
+
           <div className="relative z-10">
             <h2 className="text-3xl font-bold text-white mb-2">Organizer Sign In</h2>
             <p className="text-light-muted text-sm mb-8">Welcome back to your dashboard.</p>
@@ -94,7 +103,7 @@ const OrgLogin = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && <div className="p-3 bg-red-900/30 border border-red-500/50 rounded text-red-200 text-sm">{error}</div>}
               <Input label="Organization Email" id="email" type="email" icon={Mail} placeholder="admin@eco-tech.org" value={formData.email} onChange={handleChange} required />
-              
+
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <label htmlFor="password" className="text-xs font-mono uppercase tracking-wider text-light-muted">Password</label>

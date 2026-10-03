@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import OrganizerSidebar from "../../components/organizer_portal/OrganizerSidebar";
-import { CLOUDINARY_IMAGES } from "../../constants/cloudinaryImages";
 import {
   Menu,
   ArrowLeft,
@@ -57,12 +56,13 @@ function OrganizerCreateEvent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const [formData, setFormData] = useState({
     title: "",
     category: "Environmental",
     icon: "leaf",
-    image_url: CLOUDINARY_IMAGES.event_urban_forest_mapping,
     start_time: "",
     end_time: "",
     location: "",
@@ -96,12 +96,28 @@ function OrganizerCreateEvent() {
     setSubmitting(true);
 
     try {
+      // Upload image to Cloudinary first if a file was selected
+      let uploadedImageUrl = undefined;
+      if (imageFile) {
+        const fd = new FormData();
+        fd.append("file", imageFile);
+        fd.append("upload_preset", "ml_default");
+        const uploadRes = await fetch("https://api.cloudinary.com/v1_1/dsemiizxm/image/upload", {
+          method: "POST",
+          body: fd,
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.secure_url) {
+          uploadedImageUrl = uploadData.secure_url;
+        }
+      }
+
       const payload = {
         title: formData.title.trim(),
         category: formData.category,
         icon: formData.icon,
         organizer: user?.displayName || undefined,
-        image_url: formData.image_url.trim() || undefined,
+        image_url: uploadedImageUrl || undefined,
         start_time: formData.start_time
           ? new Date(formData.start_time).toISOString()
           : undefined,
@@ -289,31 +305,29 @@ function OrganizerCreateEvent() {
                 </div>
               </div>
 
+              {/* Cover Image Upload */}
               <div>
                 <label className="mb-2 block text-xs font-medium uppercase tracking-widest text-[#c1cab3]">
-                  Cover Image URL
+                  Cover Image
                 </label>
-                <div className="flex gap-4">
-                  <div className="relative flex-1">
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
                     <input
-                      type="url"
-                      name="image_url"
-                      value={formData.image_url}
-                      onChange={handleChange}
-                      placeholder="https://images.unsplash.com/..."
-                      className="w-full rounded-lg border border-[#324539] bg-[#14251d] px-4 py-3.5 text-sm text-[#e0e3e1] outline-none transition placeholder:text-[#879083] focus:border-[#afff66]"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setImageFile(file);
+                        setImagePreview(URL.createObjectURL(file));
+                      }}
+                      className="w-full text-sm text-[#e0e3e1] file:mr-4 file:rounded-xl file:border-0 file:bg-[#324539] file:px-4 file:py-2.5 file:font-semibold file:text-[#afff66] file:cursor-pointer file:transition hover:file:bg-[#24342A] outline-none cursor-pointer"
                     />
+                    <p className="mt-2 text-xs text-[#879083]">Upload a JPG, PNG or WEBP image to use as the event cover.</p>
                   </div>
-                  {formData.image_url && (
-                    <div className="h-12 w-16 shrink-0 overflow-hidden rounded-lg border border-[#324539] bg-[#14251d]">
-                      <img
-                        src={formData.image_url}
-                        alt="Preview"
-                        className="h-full w-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                        }}
-                      />
+                  {imagePreview && (
+                    <div className="h-16 w-24 shrink-0 overflow-hidden rounded-lg border border-[#324539] bg-[#14251d]">
+                      <img src={imagePreview} alt="Preview" className="h-full w-full object-cover" />
                     </div>
                   )}
                 </div>

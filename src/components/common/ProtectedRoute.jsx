@@ -25,6 +25,12 @@ export default function ProtectedRoute({
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
+  // Org users who are not yet Verified must wait for admin approval
+  if (user.role === "organization" && user.orgStatus !== "Verified") {
+    return <Navigate to="/auth/org-pending" replace />;
+  }
+
   return <Outlet />;
 }
+
 

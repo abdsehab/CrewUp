@@ -17,6 +17,8 @@ import VolunteerLogin from './pages/auth/VolunteerLogin';
 import VolunteerRegister from './pages/auth/VolunteerRegister';
 import OrgLogin from './pages/auth/OrgLogin';
 import OrgRegister from './pages/auth/OrgRegister';
+import OrgPendingApproval from './pages/auth/OrgPendingApproval';
+import AdminLogin from './pages/auth/AdminLogin';
 
 // Legal pages
 import PrivacyPolicy from './pages/legal/PrivacyPolicy';
@@ -49,7 +51,7 @@ function App() {
           <Route path="events/:id" element={<EventDetails />} />
           <Route path="about" element={<About />} />
           <Route path="organizations" element={<Organizations />} />
-          
+
           {/* Auth (Guest-only routes) */}
           <Route element={<GuestRoute />}>
             <Route path="auth/login" element={<LoginSelection />} />
@@ -58,8 +60,9 @@ function App() {
             <Route path="auth/volunteer-register" element={<VolunteerRegister />} />
             <Route path="auth/org-login" element={<OrgLogin />} />
             <Route path="auth/org-register" element={<OrgRegister />} />
+            <Route path="auth/admin-login" element={<AdminLogin />} />
           </Route>
-          
+
           {/* Legal */}
           <Route path="legal/privacy" element={<PrivacyPolicy />} />
           <Route path="legal/terms" element={<Terms />} />
@@ -70,6 +73,9 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={['volunteer']} redirectTo="/auth/volunteer-login" />}>
             <Route path="volunteer/dashboard" element={<VolunteerDashboard />} />
           </Route>
+
+          {/* Org Pending Approval — accessible while logged in as org */}
+          <Route path="auth/org-pending" element={<OrgPendingApproval />} />
         </Route>
 
         {/* Organizer Portal */}
@@ -80,10 +86,12 @@ function App() {
           <Route path="/organizer/create-event" element={<OrganizerCreateEvent />} />
         </Route>
 
-        {/* Admin Portal — URL-only access, no links point here */}
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/events" element={<AdminManageEvents />} />
-        <Route path="/admin/orgs" element={<AdminManageOrgs />} />
+        {/* Admin Portal — Secured by ProtectedRoute */}
+        <Route element={<ProtectedRoute allowedRoles={['admin']} redirectTo="/auth/admin-login" />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/events" element={<AdminManageEvents />} />
+          <Route path="/admin/orgs" element={<AdminManageOrgs />} />
+        </Route>
 
       </Routes>
     </Router>

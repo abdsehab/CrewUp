@@ -2,39 +2,57 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import Organization from "./model/organization.js";
 import Event from "./model/event.js";
+import User from "./model/user.js";
+import { hashPassword } from "./utils/helpers.js";
 
 const ORGANIZATIONS = [
   {
     name: "GreenTech Initiative",
+    email: "contact@greentech.org",
+    createdAt: new Date("2021-04-12T08:30:00Z"),
     desc: "Leveraging open-source hardware to monitor forest health and prevent illegal logging.",
     bio: "Leveraging open-source hardware to monitor and restore urban ecosystems since 2019.",
     image: "https://res.cloudinary.com/dsemiizxm/image/upload/v1789831588/org_greentech_initiative_xrfpht.webp",
     events: 42,
     volunteers: "1.2k+",
+    status: "Verified",
+    verified: true,
   },
   {
     name: "Ocean Clean AI",
+    email: "hello@oceanclean.ai",
+    createdAt: new Date("2023-08-22T10:15:00Z"),
     desc: "Deploying autonomous drone fleets guided by machine learning to map and clear ocean plastics.",
     bio: "Deploying tech-first solutions to connect, empower and clean our communities globally.",
     image: "https://res.cloudinary.com/dsemiizxm/image/upload/v1789831588/org_ocean_clean_ai_w6fog8.webp",
     events: 89,
     volunteers: "3.5k+",
+    status: "Pending",
+    verified: false,
   },
   {
     name: "Solar Action Network",
+    email: "volunteer@solaraction.net",
+    createdAt: new Date("2020-11-05T14:45:00Z"),
     desc: "Bringing sustainable energy to off-grid communities via volunteer-driven microgrid installs.",
     bio: "Bringing sustainable energy to off-grid communities via volunteer-driven microgrid installs.",
     image: "https://res.cloudinary.com/dsemiizxm/image/upload/v1789831589/org_solar_action_network_stx2ea.webp",
     events: 15,
     volunteers: "850+",
+    status: "Verified",
+    verified: true,
   },
   {
     name: "Urban Roots Collective",
+    email: "team@urbanroots.org",
+    createdAt: new Date("2024-02-18T09:00:00Z"),
     desc: "Fostering greener, climate-resilient cities through grassroots community stewardship.",
     bio: "Fostering greener, climate-resilient cities through grassroots community stewardship.",
     image: "https://res.cloudinary.com/dsemiizxm/image/upload/v1789831590/org_urban_roots_collective_pqfsgl.webp",
     events: 28,
     volunteers: "950+",
+    status: "Suspended",
+    verified: false,
   },
 ];
 
@@ -265,9 +283,28 @@ const seed = async () => {
 
     await Organization.deleteMany({});
     await Event.deleteMany({});
+    await User.deleteMany({});
+
+    const adminPassword = await hashPassword("password");
+    const orgPassword = await hashPassword("crewup2026");
+
+    await User.create({
+      username: "admin@crewup.org",
+      displayName: "Administrator",
+      password: adminPassword,
+      role: "admin",
+    });
+
+    const usersToInsert = ORGANIZATIONS.map((org) => ({
+      username: org.email,
+      displayName: org.name,
+      password: orgPassword,
+      role: "volunteer",
+    }));
+    await User.insertMany(usersToInsert);
 
     const insertedOrgs = await Organization.insertMany(ORGANIZATIONS);
-    console.log(`Inserted ${insertedOrgs.length} organizations`);
+    console.log(`Inserted ${insertedOrgs.length} organizations and created their user accounts`);
 
     const orgByName = new Map(
       insertedOrgs.map((org) => [org.name, org._id]),

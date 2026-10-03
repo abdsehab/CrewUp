@@ -13,7 +13,8 @@ export default function Organizations() {
     fetchJSON("/api/organizations")
       .then((data) => {
         if (!cancelled) {
-          setOrgs(data);
+          const verifiedOrgs = data.filter((org) => org.status === "Verified");
+          setOrgs(verifiedOrgs);
           setLoading(false);
         }
       })

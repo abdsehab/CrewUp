@@ -1,5 +1,7 @@
-import { NavLink } from "react-router-dom";
-
+import { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { API_BASE } from "../../utils/api";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -8,7 +10,6 @@ import {
   SlidersHorizontal,
   X,
   Trash2,
-  Eye,
   RefreshCw,
   Image,
   ChevronLeft,
@@ -17,312 +18,210 @@ import {
 } from "lucide-react";
 
 function AdminManageEvents() {
-  const events = [
-    {
-      name: "Riverfront Revitalization & Cleanup",
-      organizer: "GreenTech Initiative",
-      details: "Downtown Waterfront District · Habitat...",
-      date: "Oct 24, 2024",
-      time: "08:00 AM - 12:00 PM",
-      registrations: 45,
-      total: 50,
-      progress: 90,
-      status: "Published",
-      image: true,
-    },
-    {
-      name: "Tech Waste Recycling Drive",
-      organizer: "Ocean Clean AI",
-      details: "Main City Plaza · Recycling Initiative",
-      date: "Nov 12, 2024",
-      time: "10:00 AM - 04:00 PM",
-      registrations: 0,
-      total: 100,
-      progress: 0,
-      status: "Draft",
-      image: false,
-    },
-    {
-      name: "Community Garden Expansion",
-      organizer: "Solar Action Network",
-      details: "Eastside Park · Urban Agriculture",
-      date: "Sep 15, 2024",
-      time: "Completed",
-      registrations: 30,
-      total: 30,
-      progress: 100,
-      status: "Completed",
-      image: true,
-    },
-  ];
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  };
+
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE}/api/events`);
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data);
+      }
+    } catch (err) {
+      console.error("Error fetching events:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteEvent = async (id) => {
+    if (!window.confirm("Are you sure you want to remove this event?")) return;
+    try {
+      const response = await fetch(`${API_BASE}/api/events/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (response.ok) {
+        setEvents((prev) => prev.filter((event) => event._id !== id));
+      }
+    } catch (err) {
+      console.error("Error deleting event:", err);
+    }
+  };
+
+  const calculateProgress = (filled, capacity) => {
+    if (!capacity) return 0;
+    return Math.min(Math.round((filled / capacity) * 100), 100);
+  };
+
+  const filteredEvents = events.filter(event =>
+    event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    event.organizer?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="flex min-h-screen bg-[#101413] text-[#e0e3e1]">
-      {/* ------------------- SIDEBAR -------------------- */}
-      <aside className="flex min-h-screen w-[275px] flex-col justify-between border-r border-[#24342A] bg-[#1c201f] px-6 py-7">
-        <div>
-          {/* Logo */}
-          <div className="mb-12 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#24342A] text-sm text-[#afff66]">
-              AP
+    <div className="flex flex-col lg:flex-row min-h-screen bg-[#101413] text-[#e0e3e1]">
+      <aside className="flex w-full lg:min-h-screen lg:w-[275px] flex-col justify-between border-b lg:border-r border-[#24342A] bg-[#1c201f] px-6 py-5 lg:py-7 shrink-0">
+        <div className="flex flex-col lg:block">
+          <div className="mb-6 lg:mb-12 flex items-center justify-between lg:justify-start gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 lg:h-11 lg:w-11 items-center justify-center rounded-full bg-[#24342A] text-sm text-[#afff66]">AP</div>
+              <div>
+                <h2 className="text-base lg:text-lg font-semibold tracking-wide text-[#afff66]">Admin Portal</h2>
+                <p className="hidden lg:block text-xs tracking-wider text-[#c1cab3]">Platform Administration</p>
+              </div>
             </div>
-
-            <div>
-              <h2 className="text-lg font-semibold tracking-wide text-[#afff66]">
-                Admin Portal
-              </h2>
-
-              <p className="text-xs tracking-wider text-[#c1cab3]">
-                Platform Administration
-              </p>
-            </div>
+            {/* Mobile Logout (Header) */}
+            <button onClick={handleLogout} className="lg:hidden flex items-center gap-2 rounded-lg border border-[#324539] px-3 py-2 text-xs font-medium tracking-wide text-[#c1cab3] transition hover:bg-[#24342A] hover:text-[#afff66]">
+              <LogOut size={16} /> Sign Out
+            </button>
           </div>
-
-          {/* Navigation */}
-          <nav className="space-y-2">
-            {/* Dashboard */}
-            <NavLink
-              to="/admin/dashboard"
-              className={({ isActive }) =>
-                `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
-                  isActive
-                    ? "bg-[#424f47] text-[#afff66]"
-                    : "text-[#c1cab3] hover:bg-[#24342A]"
-                }`
-              }
-            >
-              <LayoutDashboard size={20} />
-              Dashboard
+          <nav className="flex overflow-x-auto lg:flex-col lg:space-y-2 pb-2 lg:pb-0 gap-2 lg:gap-0 hide-scrollbar">
+            <NavLink to="/admin/dashboard" className={({ isActive }) => `flex shrink-0 lg:w-full items-center gap-2 lg:gap-4 rounded-lg px-4 py-3 lg:py-4 text-[10px] lg:text-xs uppercase tracking-widest transition ${isActive ? "bg-[#424f47] text-[#afff66]" : "text-[#c1cab3] hover:bg-[#24342A]"}`}>
+              <LayoutDashboard size={18} className="lg:w-5 lg:h-5" /> Dashboard
             </NavLink>
-
-            {/* Manage Events */}
-            <NavLink
-              to="/admin/events"
-              className={({ isActive }) =>
-                `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
-                  isActive
-                    ? "bg-[#424f47] text-[#afff66]"
-                    : "text-[#c1cab3] hover:bg-[#24342A]"
-                }`
-              }
-            >
-              <CalendarDays size={20} />
-              Manage Events
+            <NavLink to="/admin/events" className={({ isActive }) => `flex shrink-0 lg:w-full items-center gap-2 lg:gap-4 rounded-lg px-4 py-3 lg:py-4 text-[10px] lg:text-xs uppercase tracking-widest transition ${isActive ? "bg-[#424f47] text-[#afff66]" : "text-[#c1cab3] hover:bg-[#24342A]"}`}>
+              <CalendarDays size={18} className="lg:w-5 lg:h-5" /> Manage Events
             </NavLink>
-
-            {/* Manage Orgs */}
-            <NavLink
-              to="/admin/orgs"
-              className={({ isActive }) =>
-                `flex w-full items-center gap-4 rounded-lg px-4 py-4 text-left text-xs uppercase tracking-widest transition ${
-                  isActive
-                    ? "bg-[#424f47] text-[#afff66]"
-                    : "text-[#c1cab3] hover:bg-[#24342A]"
-                }`
-              }
-            >
-              <Building2 size={20} />
-              Manage Orgs
+            <NavLink to="/admin/orgs" className={({ isActive }) => `flex shrink-0 lg:w-full items-center gap-2 lg:gap-4 rounded-lg px-4 py-3 lg:py-4 text-[10px] lg:text-xs uppercase tracking-widest transition ${isActive ? "bg-[#424f47] text-[#afff66]" : "text-[#c1cab3] hover:bg-[#24342A]"}`}>
+              <Building2 size={18} className="lg:w-5 lg:h-5" /> Manage Orgs
             </NavLink>
           </nav>
         </div>
-
-        {/* Sign Out */}
-        <NavLink
-          to="/"
-          className="flex w-full items-center justify-center gap-3 rounded-lg border border-[#324539] py-4 font-medium tracking-wide text-[#c1cab3] transition hover:bg-[#24342A] hover:text-[#afff66]"
+        <button
+          onClick={handleLogout}
+          className="hidden lg:flex w-full items-center justify-center gap-3 rounded-lg border border-[#324539] py-4 font-medium tracking-wide text-[#c1cab3] transition hover:bg-[#24342A] hover:text-[#afff66]"
         >
           <LogOut size={20} />
           Sign Out
-        </NavLink>
+        </button>
       </aside>
 
-      {/* ----------------- MAIN CONTENT -------------------- */}
-      <main className="flex-1 px-10 py-11">
-        {/* Top Section */}
-        <div className="mb-20 flex items-start justify-between">
+      <main className="flex-1 px-4 lg:px-10 py-8 lg:py-11 overflow-hidden">
+        <div className="mb-8 lg:mb-20 flex flex-col lg:flex-row items-start justify-between gap-6 lg:gap-0">
           <div>
-            <h1 className="mb-2 text-5xl font-semibold">Manage Events</h1>
-
-            <p className="text-base text-[#c1cab3]">
-              Monitor and moderate every event hosted across the platform.
-            </p>
+            <h1 className="mb-2 text-3xl lg:text-5xl font-semibold">Manage Events</h1>
+            <p className="text-sm lg:text-base text-[#c1cab3]">Monitor and moderate every event hosted across the platform.</p>
           </div>
-
-          {/* Statistics */}
-          <div className="flex gap-4">
-            <div className="flex w-[170px] items-center gap-4 rounded-xl border border-[#324539] bg-[#1c201f] p-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#24342A] text-[#afff66]">
-                <RefreshCw size={23} />
+          <div className="flex gap-4 w-full lg:w-auto">
+            <div
+              className="flex w-full lg:w-[170px] items-center gap-4 rounded-xl border border-[#324539] bg-[#1c201f] p-4 cursor-pointer hover:bg-[#24342A] transition-colors"
+              onClick={fetchEvents}
+              title="Click to refresh events"
+            >
+              <div className="flex h-10 w-10 lg:h-12 lg:w-12 shrink-0 items-center justify-center rounded-md bg-[#24342A] text-[#afff66]">
+                <RefreshCw size={23} className={loading ? "animate-spin" : ""} />
               </div>
-
               <div>
-                <p className="text-sm text-[#c1cab3]">Active</p>
-
-                <h3 className="text-xl font-semibold">64</h3>
+                <p className="text-xs lg:text-sm text-[#c1cab3]">Active</p>
+                <h3 className="text-lg lg:text-xl font-semibold">{events.length}</h3>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ----------------- EVENTS CARD --------------------- */}
-        <section className="max-w-[1050px] overflow-hidden rounded-2xl border border-[#324539] bg-[#1c201f]">
-          {/* Search */}
-          <div className="flex items-center justify-between bg-[#24342A] p-6">
-            <div className="flex h-10 w-[480px] items-center gap-3 rounded-md border border-[#324539] bg-[#14251d] px-4 text-[#c1cab3]">
-              <Search size={20} />
-
-              <input
-                type="text"
-                placeholder="Search events..."
-                className="w-full bg-transparent text-sm tracking-wide outline-none placeholder:text-[#879083]"
-              />
+        <div className="w-full overflow-x-auto hide-scrollbar rounded-2xl">
+          <section className="min-w-[1050px] overflow-hidden rounded-2xl border border-[#324539] bg-[#1c201f]">
+            <div className="flex items-center justify-between bg-[#24342A] p-6">
+              <div className="flex h-10 w-full max-w-[480px] items-center gap-3 rounded-md border border-[#324539] bg-[#14251d] px-4 text-[#c1cab3]">
+                <Search size={20} />
+                <input
+                  type="text"
+                  placeholder="Search events..."
+                  className="w-full bg-transparent text-sm tracking-wide outline-none placeholder:text-[#879083]"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
 
-            <button className="flex items-center gap-2 rounded-md border border-[#324539] px-5 py-2.5 text-sm tracking-widest text-[#c1cab3] transition hover:bg-[#1c201f]">
-              <SlidersHorizontal size={17} />
-              Filter
-            </button>
-          </div>
+            <div className="grid grid-cols-[2fr_0.85fr_0.95fr_0.9fr_0.85fr_0.5fr] bg-[#19201d] px-9 py-5 text-[11px] uppercase tracking-widest text-[#c1cab3]">
+              <div>Event Name & Details</div>
+              <div>Organizer</div>
+              <div>Date & Time</div>
+              <div>Registrations</div>
+              <div>Status</div>
+              <div>Actions</div>
+            </div>
 
-          {/* Table Header */}
-          <div className="grid grid-cols-[2fr_0.85fr_0.95fr_0.9fr_0.85fr_0.5fr] bg-[#19201d] px-9 py-5 text-[11px] uppercase tracking-widest text-[#c1cab3]">
-            <div>Event Name & Details</div>
-            <div>Organizer</div>
-            <div>Date & Time</div>
-            <div>Registrations</div>
-            <div>Status</div>
-            <div>Actions</div>
-          </div>
-
-          {/* Events */}
-          {events.map((event, index) => (
-            <div
-              key={index}
-              className="grid min-h-[120px] grid-cols-[2fr_0.85fr_0.95fr_0.9fr_0.85fr_0.5fr] items-center border-b border-[#24342A] px-9 py-4"
-            >
-              {/* Event Information */}
-              <div className="flex items-center gap-4">
-                <div className="flex h-[68px] w-[68px] items-center justify-center overflow-hidden rounded-md bg-[#24342A] text-[#424938]">
-                  {event.image ? (
-                    <div
-                      className={`h-full w-full ${
-                        index === 0
-                          ? "bg-gradient-to-br from-[#31503d] via-[#739e6b] to-[#17231b]"
-                          : "bg-gradient-to-br from-[#202a24] via-[#4a5549] to-[#161b17]"
-                      }`}
-                    />
-                  ) : (
-                    <Image size={28} />
-                  )}
-                </div>
-
-                <div>
-                  <h3 className="max-w-[240px] text-[17px] font-semibold leading-7">
-                    {event.name}
-                  </h3>
-
-                  <p className="mt-1 text-sm text-[#c1cab3]">{event.details}</p>
-                </div>
-              </div>
-
-              {/* Organizer */}
-              <div className="pr-2 text-sm">{event.organizer}</div>
-
-              {/* Date */}
-              <div>
-                <p className="mb-2 text-sm">{event.date}</p>
-
-                <span className="text-xs text-[#c1cab3]">{event.time}</span>
-              </div>
-
-              {/* Registrations */}
-              <div>
-                <p className="mb-2 text-sm">
-                  <strong>{event.registrations}</strong>
-                  <span className="text-[#c1cab3]"> / {event.total}</span>
-                </p>
-
-                <div className="h-[7px] w-[110px] overflow-hidden rounded-full bg-[#324539]">
-                  <div
-                    className="h-full rounded-full bg-[#afff66]"
-                    style={{
-                      width: `${event.progress}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Status */}
-              <div>
-                {event.status === "Published" && (
-                  <span className="rounded-full border border-[#324539] bg-[#213324] px-3 py-2 text-[10px] tracking-widest text-[#afff66]">
-                    ● PUBLISHED
-                  </span>
-                )}
-
-                {event.status === "Draft" && (
-                  <span className="rounded-full border border-[#324539] bg-[#29302d] px-3 py-2 text-[10px] tracking-widest text-[#c1cab3]">
-                    ◌ DRAFT
-                  </span>
-                )}
-
-                {event.status === "Completed" && (
-                  <span className="rounded-full border border-[#324539] px-3 py-2 text-[10px] tracking-widest text-[#a3aaa1]">
-                    ◉ COMPLETED
-                  </span>
-                )}
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-between pr-4 text-[#c1cab3]">
-                {event.status === "Completed" ? (
-                  <Eye
-                    size={20}
-                    className="cursor-pointer transition hover:text-[#afff66]"
-                  />
-                ) : (
-                  <>
-                    {event.status === "Published" ? (
-                      <X
-                        size={21}
-                        className="cursor-pointer transition hover:text-[#afff66]"
+            {loading && events.length === 0 ? (
+              <div className="p-8 text-center text-sm text-[#c1cab3]">Loading events...</div>
+            ) : filteredEvents.length === 0 ? (
+              <div className="p-8 text-center text-sm text-[#c1cab3]">No events found.</div>
+            ) : (
+              filteredEvents.map((event, index) => (
+                <div key={event._id} className="grid min-h-[120px] grid-cols-[2fr_0.85fr_0.95fr_0.9fr_0.85fr_0.5fr] items-center border-b border-[#24342A] px-9 py-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-[60px] w-[60px] lg:h-[68px] lg:w-[68px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#24342A] text-[#424938]">
+                      {event.image_url ? (
+                        <img src={event.image_url} alt={event.title} className="h-full w-full object-cover" />
+                      ) : (
+                        <Image size={28} />
+                      )}
+                    </div>
+                    <div className="min-w-0 pr-2">
+                      <h3 className="text-base lg:text-[17px] font-semibold leading-6 lg:leading-7 truncate">{event.title}</h3>
+                      <p className="mt-1 text-sm text-[#c1cab3] truncate">{event.location}</p>
+                    </div>
+                  </div>
+                  <div className="pr-2 text-sm truncate">{event.organizer?.name || "Unknown"}</div>
+                  <div>
+                    <p className="mb-1 lg:mb-2 text-[13px] lg:text-sm">{new Date(event.start_time).toLocaleDateString()}</p>
+                    <span className="text-xs text-[#c1cab3]">{new Date(event.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                  <div>
+                    <p className="mb-1 lg:mb-2 text-[13px] lg:text-sm">
+                      <strong>{event.filled || 0}</strong>
+                      <span className="text-[#c1cab3]"> / {event.capacity || 0}</span>
+                    </p>
+                    <div className="h-[7px] w-[90px] lg:w-[110px] overflow-hidden rounded-full bg-[#324539]">
+                      <div
+                        className="h-full rounded-full bg-[#afff66]"
+                        style={{ width: `${calculateProgress(event.filled, event.capacity)}%` }}
                       />
+                    </div>
+                  </div>
+                  <div>
+                    {event.status === "Completed" ? (
+                      <span className="rounded-full border border-[#324539] px-2 py-1.5 lg:px-3 lg:py-2 text-[9px] lg:text-[10px] tracking-widest text-[#a3aaa1]">◉ COMPLETED</span>
                     ) : (
+                      <span className="rounded-full border border-[#324539] bg-[#213324] px-2 py-1.5 lg:px-3 lg:py-2 text-[9px] lg:text-[10px] tracking-widest text-[#afff66]">● ACTIVE</span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between pr-4 text-[#c1cab3]">
+                    {event.status !== "Completed" && (
                       <Trash2
                         size={19}
                         className="cursor-pointer transition hover:text-[#afff66]"
+                        onClick={() => deleteEvent(event._id)}
+                        title="Delete Event"
                       />
                     )}
+                  </div>
+                </div>
+              ))
+            )}
 
-                    <Eye
-                      size={20}
-                      className="cursor-pointer transition hover:text-[#afff66]"
-                    />
-                  </>
-                )}
-              </div>
+            <div className="flex items-center justify-between px-5 py-4 text-xs tracking-wider text-[#c1cab3]">
+              <span>Showing {filteredEvents.length} events</span>
             </div>
-          ))}
-
-          {/* Pagination */}
-          <div className="flex items-center justify-between px-5 py-4 text-xs tracking-wider text-[#c1cab3]">
-            <p>Showing 1–3 of 15 events</p>
-
-            <div className="flex items-center gap-3">
-              <ChevronLeft size={18} />
-
-              <button className="flex h-8 w-8 items-center justify-center rounded-md bg-[#424f47] text-[#e0e3e1]">
-                1
-              </button>
-
-              <button>2</button>
-              <button>3</button>
-
-              <ChevronRight size={18} />
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
     </div>
   );
