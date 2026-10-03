@@ -343,11 +343,10 @@ function OrganizerManageVolunteers() {
               type="button"
               onClick={handleBulkApprove}
               disabled={bulkApproving || bulkRemoving || loading}
-              className={`flex h-[52px] w-full items-center justify-center gap-2.5 rounded-lg px-5 text-xs font-semibold uppercase tracking-widest transition disabled:opacity-50 sm:w-auto ${
-                selectedIds.size > 0
-                  ? "bg-[#afff66] text-[#101413] hover:bg-[#b7ff72]"
-                  : "border border-[#324539] bg-[#1c201f] text-[#c1cab3] hover:border-[#afff66] hover:text-[#afff66]"
-              }`}
+              className={`flex h-[52px] w-full items-center justify-center gap-2.5 rounded-lg px-5 text-xs font-semibold uppercase tracking-widest transition disabled:opacity-50 sm:w-auto ${selectedIds.size > 0
+                ? "bg-[#afff66] text-[#101413] hover:bg-[#b7ff72]"
+                : "border border-[#324539] bg-[#1c201f] text-[#c1cab3] hover:border-[#afff66] hover:text-[#afff66]"
+                }`}
               title={
                 selectedIds.size > 0
                   ? `Approve ${selectedIds.size} selected volunteer(s)`
@@ -433,11 +432,10 @@ function OrganizerManageVolunteers() {
                     setSelectedEvent("All Events");
                     setIsEventDropdownOpen(false);
                   }}
-                  className={`w-full rounded-md px-3 py-2 text-left text-xs uppercase tracking-wider transition ${
-                    selectedEvent === "All Events"
-                      ? "bg-[#24342A] text-[#afff66]"
-                      : "text-[#c1cab3] hover:bg-[#24342A]"
-                  }`}
+                  className={`w-full rounded-md px-3 py-2 text-left text-xs uppercase tracking-wider transition ${selectedEvent === "All Events"
+                    ? "bg-[#24342A] text-[#afff66]"
+                    : "text-[#c1cab3] hover:bg-[#24342A]"
+                    }`}
                 >
                   All Events
                 </button>
@@ -449,11 +447,10 @@ function OrganizerManageVolunteers() {
                       setSelectedEvent(title);
                       setIsEventDropdownOpen(false);
                     }}
-                    className={`w-full truncate rounded-md px-3 py-2 text-left text-xs tracking-wide transition ${
-                      selectedEvent === title
-                        ? "bg-[#24342A] text-[#afff66]"
-                        : "text-[#c1cab3] hover:bg-[#24342A]"
-                    }`}
+                    className={`w-full truncate rounded-md px-3 py-2 text-left text-xs tracking-wide transition ${selectedEvent === title
+                      ? "bg-[#24342A] text-[#afff66]"
+                      : "text-[#c1cab3] hover:bg-[#24342A]"
+                      }`}
                   >
                     {title}
                   </button>
@@ -490,11 +487,10 @@ function OrganizerManageVolunteers() {
                       setStatusFilter(st);
                       setIsStatusDropdownOpen(false);
                     }}
-                    className={`w-full rounded-md px-3 py-2 text-left text-xs uppercase tracking-wider transition ${
-                      statusFilter === st
-                        ? "bg-[#24342A] text-[#afff66]"
-                        : "text-[#c1cab3] hover:bg-[#24342A]"
-                    }`}
+                    className={`w-full rounded-md px-3 py-2 text-left text-xs uppercase tracking-wider transition ${statusFilter === st
+                      ? "bg-[#24342A] text-[#afff66]"
+                      : "text-[#c1cab3] hover:bg-[#24342A]"
+                      }`}
                   >
                     {st === "All" ? "All Statuses" : st}
                   </button>
@@ -513,11 +509,10 @@ function OrganizerManageVolunteers() {
                   <button
                     type="button"
                     onClick={toggleSelectAll}
-                    className={`flex h-4 w-4 items-center justify-center rounded border transition ${
-                      allFilteredSelected
-                        ? "border-[#afff66] bg-[#afff66] text-[#101413]"
-                        : "border-[#324539] bg-[#101413]"
-                    }`}
+                    className={`flex h-4 w-4 items-center justify-center rounded border transition ${allFilteredSelected
+                      ? "border-[#afff66] bg-[#afff66] text-[#101413]"
+                      : "border-[#324539] bg-[#101413]"
+                      }`}
                   >
                     {allFilteredSelected && <Check size={12} strokeWidth={3} />}
                   </button>
@@ -561,11 +556,10 @@ function OrganizerManageVolunteers() {
                         <button
                           type="button"
                           onClick={() => toggleSelectOne(reg._id)}
-                          className={`flex h-4 w-4 items-center justify-center rounded border transition ${
-                            isSelected
-                              ? "border-[#afff66] bg-[#afff66] text-[#101413]"
-                              : "border-[#324539] bg-[#101413]"
-                          }`}
+                          className={`flex h-4 w-4 items-center justify-center rounded border transition ${isSelected
+                            ? "border-[#afff66] bg-[#afff66] text-[#101413]"
+                            : "border-[#324539] bg-[#101413]"
+                            }`}
                         >
                           {isSelected && <Check size={12} strokeWidth={3} />}
                         </button>
@@ -573,11 +567,10 @@ function OrganizerManageVolunteers() {
 
                       <div className="flex items-center gap-3">
                         <div
-                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-                            index % 2 === 0
-                              ? "bg-[#34463d] text-[#afff66]"
-                              : "bg-[#1f3731] text-[#afff66]"
-                          }`}
+                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${index % 2 === 0
+                            ? "bg-[#34463d] text-[#afff66]"
+                            : "bg-[#1f3731] text-[#afff66]"
+                            }`}
                         >
                           {initials}
                         </div>
@@ -602,8 +595,8 @@ function OrganizerManageVolunteers() {
                         <p className="mt-1 text-xs text-[#c1cab3]">
                           {reg.event?.start_time
                             ? new Date(
-                                reg.event.start_time,
-                              ).toLocaleDateString()
+                              reg.event.start_time,
+                            ).toLocaleDateString()
                             : ""}
                         </p>
                       </div>

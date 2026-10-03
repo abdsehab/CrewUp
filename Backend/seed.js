@@ -299,12 +299,22 @@ const seed = async () => {
       username: org.email,
       displayName: org.name,
       password: orgPassword,
-      role: "volunteer",
+      image: org.image,
+      role: "organization",
     }));
-    await User.insertMany(usersToInsert);
 
-    const insertedOrgs = await Organization.insertMany(ORGANIZATIONS);
-    console.log(`Inserted ${insertedOrgs.length} organizations and created their user accounts`);
+    // Insert Users first to get their IDs
+    const insertedUsers = await User.insertMany(usersToInsert);
+
+    // Map the new User IDs into the Organizations before inserting
+    const userMap = new Map(insertedUsers.map(user => [user.displayName, user._id]));
+    const orgsToInsert = ORGANIZATIONS.map(org => ({
+      ...org,
+      userId: userMap.get(org.name)
+    }));
+
+    const insertedOrgs = await Organization.insertMany(orgsToInsert);
+    console.log(`Inserted ${insertedOrgs.length} organizations and created their linked user accounts`);
 
     const orgByName = new Map(
       insertedOrgs.map((org) => [org.name, org._id]),
